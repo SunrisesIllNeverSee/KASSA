@@ -18,6 +18,30 @@
 
 ---
 
+### File Locations
+
+| Doc ID | File Path |
+|--------|-----------|
+| KA§§A-DOC-001 | `docs/spec/KASSA-SPEC-v03.md` |
+| KA§§A-DOC-002 | `docs/build/KASSA-PRE-BUILD-PLAN.md` |
+| KA§§A-DOC-003 | `docs/brand/KASSA-SEO-STRATEGY.md` |
+| KA§§A-DOC-004 | `docs/spec/KASSA-SEAT-INSTRUMENT-SPEC.md` |
+| KA§§A-DOC-005 | `docs/outreach/KASSA-AGENT-PROTOCOL.md` |
+| KA§§A-DOC-006 | `docs/outreach/KASSA-OUTREACH-TARGETS.md` |
+| KA§§A-DOC-007 | `docs/brand/KASSA-BRAND-IDENTITY.md` |
+| KA§§A-DOC-008 | `docs/build/KASSA-BUILD-BRIEF-v2.md` |
+
+**Other key locations:**
+- `docs/spec/KASSA-KERNEL.md` — Core engine spec (cascade wave + board)
+- `docs/build/KASSA-BUILD-BRIEF.md` — Build brief v1
+- `docs/wave-cascade/` — Product-agnostic wave cascade specs
+- `ip/` — Patent pending application, seat registry fixes
+- `prototypes/kassa/` — JSX components and HTML mockups
+- `prototypes/wave-cascade/` — Wave cascade visualizations
+- `moses/` — MO§ES™ brand assets and prototypes (separated)
+
+---
+
 ### Document Dependency Map
 
 ```
