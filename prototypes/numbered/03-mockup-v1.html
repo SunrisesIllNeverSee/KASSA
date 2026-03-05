@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KA§§A — Own the Founding Position</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C4923A;
+    --gold-light: #D4A854;
+    --bone: #F2EDE4;
+    --obsidian: #1A1A18;
+    --drift: #6B6558;
+    --sand: #DDD5C8;
+    --verdigris: #4A7C59;
+    --terra: #B44A3F;
+    --slate: #3A6B8C;
+    --charcoal: #2A2A25;
+    --dark-border: #3A3830;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bone);
+    color: var(--obsidian);
+    overflow-x: hidden;
+  }
+
+  .serif { font-family: 'Playfair Display', serif; font-weight: 700; }
+  .mono { font-family: 'DM Mono', monospace; }
+  .gold { color: var(--gold); }
+  .drift { color: var(--drift); }
+
+  /* ========== NAV ========== */
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 48px;
+    background: var(--obsidian);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav-mark {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--bone);
+    text-decoration: none;
+  }
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+  }
+  .nav-links a {
+    color: #8A8275;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--bone); }
+  .nav-cta {
+    padding: 9px 22px;
+    background: var(--gold);
+    color: var(--obsidian);
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 13px;
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+  .nav-cta:hover { background: var(--gold-light); }
+
+  /* ========== HERO ========== */
+  .hero {
+    padding: 100px 48px 80px;
+    max-width: 1100px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .hero-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.2s forwards;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(42px, 6vw, 72px);
+    line-height: 1.08;
+    max-width: 700px;
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.4s forwards;
+  }
+  .hero-sub {
+    font-size: 18px;
+    color: var(--drift);
+    max-width: 520px;
+    line-height: 1.7;
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.6s forwards;
+  }
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.8s forwards;
+  }
+  .btn-primary {
+    padding: 14px 32px;
+    background: var(--gold);
+    color: var(--obsidian);
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s;
+  }
+  .btn-primary:hover { background: var(--gold-light); transform: translateY(-1px); }
+  .btn-secondary {
+    padding: 14px 32px;
+    background: transparent;
+    color: var(--obsidian);
+    border: 1.5px solid var(--sand);
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* Floating data card */
+  .hero-data {
+    position: absolute;
+    right: 48px;
+    top: 120px;
+    background: white;
+    border: 1px solid var(--sand);
+    border-radius: 12px;
+    padding: 28px 32px;
+    width: 300px;
+    box-shadow: 0 12px 40px rgba(26,26,24,0.06);
+    opacity: 0;
+    animation: fadeUp 0.6s ease 1s forwards;
+  }
+  .hero-data-label {
+    font-size: 10px;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+  .hero-data-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--sand);
+  }
+  .hero-data-row:last-child { border: none; }
+  .hero-data-key { font-size: 12px; color: var(--drift); }
+  .hero-data-val { font-size: 13px; font-weight: 600; font-family: 'DM Mono', monospace; }
+
+  /* ========== SECTION DIVIDER ========== */
+  .section-divider {
+    height: 1px;
+    background: var(--sand);
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* ========== HOW IT WORKS ========== */
+  .how-section {
+    padding: 80px 48px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    margin-bottom: 48px;
+    max-width: 500px;
+    line-height: 1.15;
+  }
+  .how-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .how-card {
+    background: white;
+    border: 1px solid var(--sand);
+    border-radius: 12px;
+    padding: 32px 28px;
+    transition: all 0.25s;
+  }
+  .how-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(26,26,24,0.06);
+  }
+  .how-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 40px;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+  .how-card h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .how-card p {
+    font-size: 14px;
+    color: var(--drift);
+    line-height: 1.6;
+  }
+
+  /* ========== AUDIENCE STRIPS ========== */
+  .audience-section {
+    padding: 80px 48px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .audience-strip {
+    display: flex;
+    gap: 0;
+    margin-bottom: 2px;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .audience-strip:first-of-type { border-radius: 10px 10px 0 0; }
+  .audience-strip:last-of-type { border-radius: 0 0 10px 10px; }
+  .audience-tag {
+    width: 180px;
+    padding: 28px 24px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .audience-msg {
+    flex: 1;
+    padding: 28px 32px;
+    background: white;
+  }
+  .audience-msg h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+  .audience-msg p {
+    font-size: 14px;
+    color: var(--drift);
+    line-height: 1.6;
+  }
+
+  /* ========== LIVE LISTING MOCK ========== */
+  .listings-section {
+    padding: 80px 48px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .listing-featured {
+    display: flex;
+    gap: 0;
+    background: white;
+    border: 1px solid var(--sand);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 32px;
+  }
+  .listing-left {
+    flex: 1;
+    padding: 40px 36px;
+  }
+  .listing-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: var(--gold);
+    color: var(--obsidian);
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-radius: 4px;
+    margin-bottom: 16px;
+  }
+  .listing-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    margin-bottom: 6px;
+  }
+  .listing-by {
+    font-size: 13px;
+    color: var(--drift);
+    margin-bottom: 16px;
+  }
+  .listing-desc {
+    font-size: 15px;
+    color: var(--drift);
+    line-height: 1.7;
+    margin-bottom: 24px;
+    max-width: 440px;
+  }
+  .listing-meta {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .listing-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .listing-meta-label {
+    font-size: 10px;
+    color: var(--drift);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .listing-meta-val {
+    font-size: 16px;
+    font-weight: 600;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* Cascade visualization */
+  .listing-right {
+    width: 360px;
+    background: var(--obsidian);
+    padding: 36px 32px;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+  }
+  .cascade-title {
+    font-size: 10px;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+  .wave-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    transition: all 0.2s;
+  }
+  .wave-active {
+    background: var(--charcoal);
+    border: 1px solid var(--gold);
+  }
+  .wave-sold {
+    background: transparent;
+    border: 1px solid var(--dark-border);
+    opacity: 0.5;
+  }
+  .wave-future {
+    background: transparent;
+    border: 1px solid var(--dark-border);
+    opacity: 0.7;
+  }
+  .wave-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: #8A8275;
+    width: 50px;
+  }
+  .wave-price {
+    font-family: 'DM Mono', monospace;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--bone);
+    flex: 1;
+  }
+  .wave-active .wave-price { color: var(--gold); }
+  .wave-status {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .status-sold { color: var(--drift); }
+  .status-live { color: var(--verdigris); }
+  .status-next { color: #8A8275; }
+
+  .wave-seats-bar {
+    width: 100%;
+    height: 4px;
+    background: var(--dark-border);
+    border-radius: 2px;
+    margin-top: 6px;
+    overflow: hidden;
+  }
+  .wave-seats-fill {
+    height: 100%;
+    background: var(--gold);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  .cascade-cta {
+    margin-top: auto;
+    padding-top: 20px;
+  }
+  .cascade-cta-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--gold);
+    color: var(--obsidian);
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s;
+  }
+  .cascade-cta-btn:hover { background: var(--gold-light); }
+  .cascade-cta-sub {
+    text-align: center;
+    margin-top: 8px;
+    font-size: 11px;
+    color: #6B6558;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* ========== SEAT EMBLEM PREVIEW ========== */
+  .emblem-section {
+    padding: 80px 48px;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    gap: 60px;
+    align-items: center;
+  }
+  .emblem-text { flex: 1; }
+  .emblem-card {
+    width: 340px;
+    background: white;
+    border: 2px solid var(--sand);
+    border-radius: 14px;
+    padding: 36px 32px;
+    text-align: center;
+    flex-shrink: 0;
+    position: relative;
+    box-shadow: 0 16px 50px rgba(26,26,24,0.08);
+  }
+  .emblem-card::before {
+    content: '';
+    position: absolute;
+    top: -1px; right: -1px; bottom: -1px; left: -1px;
+    border-radius: 14px;
+    border: 1px solid var(--gold);
+    opacity: 0.3;
+  }
+  .emblem-section-symbol {
+    font-family: 'Playfair Display', serif;
+    font-size: 48px;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+  .emblem-product {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    margin-bottom: 4px;
+  }
+  .emblem-serial {
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    color: var(--drift);
+    margin-bottom: 20px;
+  }
+  .emblem-divider {
+    height: 1px;
+    background: var(--sand);
+    margin: 16px 0;
+  }
+  .emblem-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+  }
+  .emblem-row-label {
+    font-size: 11px;
+    color: var(--drift);
+  }
+  .emblem-row-val {
+    font-size: 12px;
+    font-weight: 600;
+    font-family: 'DM Mono', monospace;
+  }
+  .emblem-hash {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: #B0A998;
+    margin-top: 16px;
+    word-break: break-all;
+    line-height: 1.6;
+  }
+  .emblem-verify {
+    display: inline-block;
+    margin-top: 16px;
+    padding: 8px 20px;
+    border: 1px solid var(--gold);
+    border-radius: 6px;
+    font-size: 11px;
+    color: var(--gold);
+    font-weight: 600;
+    text-decoration: none;
+    font-family: 'DM Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    transition: all 0.2s;
+  }
+  .emblem-verify:hover { background: var(--gold); color: var(--obsidian); }
+
+  /* ========== AGENT STRIP ========== */
+  .agent-section {
+    background: var(--obsidian);
+    padding: 80px 48px;
+  }
+  .agent-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .agent-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    margin-top: 48px;
+  }
+  .agent-card {
+    background: var(--charcoal);
+    border: 1px solid var(--dark-border);
+    border-radius: 10px;
+    padding: 28px 24px;
+  }
+  .agent-card-icon {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 14px;
+  }
+  .agent-card h3 {
+    color: var(--bone);
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+  .agent-card p {
+    font-size: 13px;
+    color: #8A8275;
+    line-height: 1.6;
+  }
+
+  /* ========== COMPARISON ========== */
+  .compare-section {
+    padding: 80px 48px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .compare-table {
+    width: 100%;
+    background: white;
+    border: 1px solid var(--sand);
+    border-radius: 12px;
+    overflow: hidden;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+  .compare-table th {
+    padding: 16px 20px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--drift);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-bottom: 2px solid var(--sand);
+    background: #FAFAF7;
+  }
+  .compare-table th:last-child {
+    color: var(--gold);
+  }
+  .compare-table td {
+    padding: 14px 20px;
+    font-size: 13px;
+    border-bottom: 1px solid var(--sand);
+    color: var(--drift);
+  }
+  .compare-table tr:last-child td { border: none; }
+  .compare-table td:last-child {
+    color: var(--obsidian);
+    font-weight: 600;
+  }
+  .compare-check { color: var(--verdigris); font-weight: 600; }
+  .compare-x { color: var(--terra); }
+
+  /* ========== FOUNDER CTA ========== */
+  .founder-cta-section {
+    padding: 100px 48px;
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .founder-cta-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 40px;
+    line-height: 1.12;
+    margin-bottom: 20px;
+  }
+  .founder-cta-section p {
+    font-size: 16px;
+    color: var(--drift);
+    line-height: 1.7;
+    margin-bottom: 36px;
+  }
+
+  /* ========== FOOTER ========== */
+  footer {
+    background: var(--obsidian);
+    padding: 48px 48px 32px;
+  }
+  .footer-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+  .footer-brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--bone);
+    margin-bottom: 6px;
+  }
+  .footer-powered {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: #6B6558;
+  }
+  .footer-links {
+    display: flex;
+    gap: 40px;
+  }
+  .footer-col h4 {
+    font-size: 11px;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+  }
+  .footer-col a {
+    display: block;
+    font-size: 13px;
+    color: #8A8275;
+    text-decoration: none;
+    margin-bottom: 8px;
+    transition: color 0.2s;
+  }
+  .footer-col a:hover { color: var(--bone); }
+  .footer-bottom {
+    max-width: 1100px;
+    margin: 32px auto 0;
+    padding-top: 20px;
+    border-top: 1px solid var(--dark-border);
+    text-align: center;
+    font-size: 10px;
+    color: #5A5548;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* ========== ANIMATIONS ========== */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ========== RESPONSIVE ========== */
+  @media (max-width: 900px) {
+    .hero-data { display: none; }
+    .how-grid { grid-template-columns: 1fr; }
+    .listing-featured { flex-direction: column; }
+    .listing-right { width: 100%; }
+    .emblem-section { flex-direction: column; }
+    .agent-grid { grid-template-columns: 1fr; }
+    .audience-strip { flex-direction: column; }
+    .audience-tag { width: 100%; }
+    nav { padding: 16px 24px; }
+    .hero { padding: 60px 24px; }
+    .how-section, .audience-section, .listings-section, .compare-section, .emblem-section, .founder-cta-section { padding: 60px 24px; }
+    .agent-section { padding: 60px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-mark">KA<span class="gold">§§</span>A</a>
+  <div class="nav-links">
+    <a href="#listings">Listings</a>
+    <a href="#how">How It Works</a>
+    <a href="#founders">For Founders</a>
+    <a href="#agents">Agents</a>
+    <a href="#" class="nav-cta">List Your Product</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-label">The founding seat marketplace</div>
+  <h1 class="serif">Own the founding position.</h1>
+  <p class="hero-sub">
+    Founding seats in AI-age products. Serialized. Priced to LTV. Transferable.
+    Hash-verified. Protected by escrow. Governed by constitution.
+  </p>
+  <div class="hero-actions">
+    <button class="btn-primary">Browse Listings</button>
+    <button class="btn-secondary">List Your Product</button>
+  </div>
+
+  <div class="hero-data">
+    <div class="hero-data-label mono">Live Marketplace</div>
+    <div class="hero-data-row">
+      <span class="hero-data-key">Active listings</span>
+      <span class="hero-data-val mono">1</span>
+    </div>
+    <div class="hero-data-row">
+      <span class="hero-data-key">Seats sold</span>
+      <span class="hero-data-val mono">0</span>
+    </div>
+    <div class="hero-data-row">
+      <span class="hero-data-key">GMV</span>
+      <span class="hero-data-val mono gold">$0</span>
+    </div>
+    <div class="hero-data-row">
+      <span class="hero-data-key">Founder capital deployed</span>
+      <span class="hero-data-val mono">$0</span>
+    </div>
+    <div class="hero-data-row">
+      <span class="hero-data-key">Agent referrals</span>
+      <span class="hero-data-val mono">—</span>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- HOW IT WORKS -->
+<section class="how-section" id="how">
+  <div class="section-label mono">How It Works</div>
+  <h2 class="section-title serif">Three roles.<br>One marketplace.</h2>
+  <div class="how-grid">
+    <div class="how-card">
+      <div class="how-num serif">1</div>
+      <h3>Founders list</h3>
+      <p>Set your cascade — wave count, seat price, escrow terms. Your first 50–200 most committed users buy founding positions at a price tied to your actual LTV. Capital lands immediately.</p>
+    </div>
+    <div class="how-card">
+      <div class="how-num serif">2</div>
+      <h3>Buyers claim</h3>
+      <p>Each seat is a serialized instrument. Hash-verified lineage. Transferable position. Wave 1 is the best price it will ever be. The math is on the verification page.</p>
+    </div>
+    <div class="how-card">
+      <div class="how-num serif">3</div>
+      <h3>Agents discover</h3>
+      <p>AI agents browse structured listings, surface matches to their operators, and earn referral commission. Your agent discovers. You decide. It earns.</p>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- AUDIENCE MESSAGING -->
+<section class="audience-section">
+  <div class="section-label mono">Who It's For</div>
+  <h2 class="section-title serif">Built for builders.<br>All three kinds.</h2>
+
+  <div style="display: flex; flex-direction: column; gap: 2px; margin-top: 48px;">
+    <div class="audience-strip">
+      <div class="audience-tag" style="background: var(--gold); color: var(--obsidian);">Founders</div>
+      <div class="audience-msg">
+        <h3 class="serif">Non-dilutive capital from the people who believe in you most.</h3>
+        <p>A single cascade generates 12–24 months of runway. No equity dilution. No board seats. No liquidation preferences. Just cash from committed users.</p>
+      </div>
+    </div>
+    <div class="audience-strip">
+      <div class="audience-tag" style="background: var(--verdigris); color: white;">Buyers</div>
+      <div class="audience-msg">
+        <h3 class="serif">Wave 1 is the best price this seat will ever be.</h3>
+        <p>You're not buying a discount. You're buying a position — serialized, hash-verified, transferable. Escrow-protected for 14 days. Buyback clause if the product shuts down.</p>
+      </div>
+    </div>
+    <div class="audience-strip">
+      <div class="audience-tag" style="background: var(--slate); color: white;">Agent Operators</div>
+      <div class="audience-msg">
+        <h3 class="serif">Your agent discovers. You decide. It earns.</h3>
+        <p>Install the KA§§A skill. Your agent monitors listings, surfaces matches, and earns referral commission on every purchase it helped discover. Passive income from agent-mediated commerce.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- FEATURED LISTING -->
+<section class="listings-section" id="listings">
+  <div class="section-label mono">First Listing</div>
+  <h2 class="section-title serif">COMMAND</h2>
+
+  <div class="listing-featured">
+    <div class="listing-left">
+      <div class="listing-badge">Founding Cascade · Live</div>
+      <div class="listing-name serif">COMMAND</div>
+      <div class="listing-by">by Ello Cello LLC · <span class="mono" style="font-size: 12px;">Governance Console</span></div>
+      <p class="listing-desc">
+        The constitutional operations console for AI governance. Configure agent constraints, compression protocols, epistemic controls, and audit trails. Built on MO§E§™.
+      </p>
+      <div class="listing-meta">
+        <div class="listing-meta-item">
+          <span class="listing-meta-label">Category</span>
+          <span class="listing-meta-val">AI Governance</span>
+        </div>
+        <div class="listing-meta-item">
+          <span class="listing-meta-label">LTV Multiplier</span>
+          <span class="listing-meta-val gold">1.19x</span>
+        </div>
+        <div class="listing-meta-item">
+          <span class="listing-meta-label">Escrow</span>
+          <span class="listing-meta-val">14 days</span>
+        </div>
+        <div class="listing-meta-item">
+          <span class="listing-meta-label">Buyback</span>
+          <span class="listing-meta-val">Pro-rata</span>
+        </div>
+        <div class="listing-meta-item">
+          <span class="listing-meta-label">Total Seats</span>
+          <span class="listing-meta-val">200</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="listing-right">
+      <div class="cascade-title mono">Wave Cascade</div>
+
+      <div class="wave-row wave-sold">
+        <span class="wave-num">Wave 1</span>
+        <span class="wave-price">$800</span>
+        <span class="wave-status status-sold">Sold Out</span>
+      </div>
+
+      <div class="wave-row wave-active">
+        <span class="wave-num">Wave 2</span>
+        <span class="wave-price">$1,280</span>
+        <span class="wave-status status-live">● Live</span>
+      </div>
+      <div style="padding: 0 14px; margin-bottom: 10px;">
+        <div class="wave-seats-bar">
+          <div class="wave-seats-fill" style="width: 62%;"></div>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-top: 4px;">
+          <span style="font-size: 10px; color: #6B6558; font-family: 'DM Mono', monospace;">19 of 50 remaining</span>
+        </div>
+      </div>
+
+      <div class="wave-row wave-future">
+        <span class="wave-num">Wave 3</span>
+        <span class="wave-price">$2,048</span>
+        <span class="wave-status status-next">Upcoming</span>
+      </div>
+
+      <div class="wave-row wave-future">
+        <span class="wave-num">Wave 4</span>
+        <span class="wave-price">$3,277</span>
+        <span class="wave-status status-next">Upcoming</span>
+      </div>
+
+      <div class="cascade-cta">
+        <button class="cascade-cta-btn">Claim Seat · $1,280</button>
+        <div class="cascade-cta-sub">14-day escrow · Instant access on release</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- SEAT EMBLEM -->
+<section class="emblem-section">
+  <div class="emblem-text">
+    <div class="section-label mono">The Instrument</div>
+    <h2 class="section-title serif">Not a receipt.<br>A founding position.</h2>
+    <p style="font-size: 15px; color: var(--drift); line-height: 1.7; max-width: 440px; margin-bottom: 24px;">
+      Every seat purchased on KA§§A is a serialized instrument. Hash-verified lineage.
+      Transferable. Emblem generated on escrow release. Your serial number, your position in the cascade, your cryptographic proof that you were there.
+    </p>
+    <p style="font-size: 15px; color: var(--drift); line-height: 1.7; max-width: 440px;">
+      The verification page shows the math: LTV multiplier, buyback clause, wave position,
+      lineage hash. Everything visible. Nothing hidden.
+    </p>
+  </div>
+
+  <div class="emblem-card">
+    <div class="emblem-section-symbol">§</div>
+    <div class="emblem-product serif">COMMAND</div>
+    <div class="emblem-serial mono">KS-2026-00031</div>
+    <div class="emblem-divider"></div>
+    <div class="emblem-row">
+      <span class="emblem-row-label">Wave</span>
+      <span class="emblem-row-val mono">2 of 4</span>
+    </div>
+    <div class="emblem-row">
+      <span class="emblem-row-label">Purchase Price</span>
+      <span class="emblem-row-val mono gold">$1,280</span>
+    </div>
+    <div class="emblem-row">
+      <span class="emblem-row-label">LTV Multiplier</span>
+      <span class="emblem-row-val mono">1.19x</span>
+    </div>
+    <div class="emblem-row">
+      <span class="emblem-row-label">Escrow Status</span>
+      <span class="emblem-row-val mono" style="color: var(--verdigris);">Released</span>
+    </div>
+    <div class="emblem-row">
+      <span class="emblem-row-label">Owner</span>
+      <span class="emblem-row-val mono">d.mchenry</span>
+    </div>
+    <div class="emblem-divider"></div>
+    <div class="emblem-hash">
+      sha256: a7f3c91e...4d2b · lineage: e8b1a03f...9c7e
+    </div>
+    <a href="#" class="emblem-verify">Verify on Chain →</a>
+  </div>
+</section>
+
+<!-- AGENT SECTION -->
+<section class="agent-section" id="agents">
+  <div class="agent-inner">
+    <div class="section-label mono" style="color: var(--gold);">Agent-Native Architecture</div>
+    <h2 class="section-title serif" style="color: var(--bone);">The first marketplace built for agents.</h2>
+    <p style="font-size: 15px; color: #8A8275; max-width: 520px; line-height: 1.7;">
+      Agents don't browse websites. They query APIs. Every KA§§A listing has structured
+      JSON descriptions, machine-readable metadata, and API-based referral attribution.
+      Human-facing and agent-facing from the ground up.
+    </p>
+
+    <div class="agent-grid">
+      <div class="agent-card">
+        <div class="agent-card-icon">Discovery</div>
+        <h3>Structured API</h3>
+        <p>Agents query listings with filters, receive JSON responses with machine-readable descriptions, pricing, and cascade status. No scraping. No parsing HTML.</p>
+      </div>
+      <div class="agent-card">
+        <div class="agent-card-icon">Attribution</div>
+        <h3>Referral Protocol</h3>
+        <p>API header-based attribution. X-KA§§A-Referrer tracks which agent surfaced the listing. Commission paid from platform fee — never reduces founder revenue.</p>
+      </div>
+      <div class="agent-card">
+        <div class="agent-card-icon">Governance</div>
+        <h3>Transaction Firewall</h3>
+        <p>Agents browse, discover, and stage intents. Humans confirm and execute. No autonomous purchases. Constitutional constraints enforced at registry level.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON -->
+<section class="compare-section">
+  <div class="section-label mono">How We're Different</div>
+  <h2 class="section-title serif" style="margin-bottom: 32px;">Not a lifetime deal.<br>Not crowdfunding.<br>Not equity.</h2>
+
+  <table class="compare-table">
+    <thead>
+      <tr>
+        <th>Feature</th>
+        <th>AppSumo</th>
+        <th>Kickstarter</th>
+        <th>Republic</th>
+        <th>KA§§A</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Product must be live</td>
+        <td class="compare-x">Sometimes</td>
+        <td class="compare-x">No</td>
+        <td class="compare-x">No</td>
+        <td class="compare-check">Yes</td>
+      </tr>
+      <tr>
+        <td>Priced to LTV</td>
+        <td class="compare-x">No — discount</td>
+        <td class="compare-x">No — reward tier</td>
+        <td class="compare-x">No — equity</td>
+        <td class="compare-check">Yes</td>
+      </tr>
+      <tr>
+        <td>Serialized</td>
+        <td class="compare-x">No</td>
+        <td class="compare-x">No</td>
+        <td class="compare-x">No</td>
+        <td class="compare-check">Yes</td>
+      </tr>
+      <tr>
+        <td>Transferable</td>
+        <td class="compare-x">No</td>
+        <td class="compare-x">No</td>
+        <td>Sometimes</td>
+        <td class="compare-check">Yes</td>
+      </tr>
+      <tr>
+        <td>Non-dilutive</td>
+        <td class="compare-check">Yes</td>
+        <td class="compare-check">Yes</td>
+        <td class="compare-x">No — equity</td>
+        <td class="compare-check">Yes</td>
+      </tr>
+      <tr>
+        <td>Wave pricing</td>
+        <td class="compare-x">No</td>
+        <td>Sort of</td>
+        <td class="compare-x">No</td>
+        <td class="compare-check">Yes</td>
+      </tr>
+      <tr>
+        <td>Agent-discoverable</td>
+        <td class="compare-x">No</td>
+        <td class="compare-x">No</td>
+        <td class="compare-x">No</td>
+        <td class="compare-check">Yes</td>
+      </tr>
+      <tr>
+        <td>Escrow protection</td>
+        <td class="compare-x">No</td>
+        <td class="compare-x">No</td>
+        <td class="compare-x">No</td>
+        <td class="compare-check">14 days</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- FOUNDER CTA -->
+<section class="founder-cta-section" id="founders">
+  <div class="section-label mono">For Founders</div>
+  <h2 class="serif">Your most committed users are worth more than your next 5,000 free trials.</h2>
+  <p>
+    A single cascade generates 12–24 months of non-dilutive runway. No equity given up.
+    No VC terms. Your first 50–200 believers, priced as financial instruments,
+    not discount codes.
+  </p>
+  <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+    <button class="btn-primary">Set Up Your Cascade</button>
+    <button class="btn-secondary">See the Math</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">KA<span class="gold">§§</span>A</div>
+      <div class="footer-powered">powered by MO<span class="gold">§</span>E<span class="gold">§</span>™</div>
+    </div>
+    <div class="footer-links">
+      <div class="footer-col">
+        <h4>Marketplace</h4>
+        <a href="#">Browse Listings</a>
+        <a href="#">How It Works</a>
+        <a href="#">Verification</a>
+      </div>
+      <div class="footer-col">
+        <h4>Founders</h4>
+        <a href="#">List Your Product</a>
+        <a href="#">Cascade Calculator</a>
+        <a href="#">Documentation</a>
+      </div>
+      <div class="footer-col">
+        <h4>Agents</h4>
+        <a href="#">API Documentation</a>
+        <a href="#">OpenClaw Skill</a>
+        <a href="#">MCP Server</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="#">About</a>
+        <a href="#">Terms</a>
+        <a href="#">Privacy</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    © 2026 Ello Cello LLC · KA§§A™ powered by MO§E§™ · Constitutional Commerce
+  </div>
+</footer>
+
+</body>
+</html>

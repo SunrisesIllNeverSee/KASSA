@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KA§§A — Listings</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C4923A; --bone: #F2EDE4; --obsidian: #1A1A18;
+    --drift: #6B6558; --sand: #DDD5C8; --green: #4A7C59;
+    --red: #B44A3F; --blue: #3A6B8C; --charcoal: #2A2A25;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bone); color: var(--obsidian); }
+
+  /* NAV */
+  nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 48px; background: var(--obsidian); position: sticky; top: 0; z-index: 10;
+  }
+  .nav-mark { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--bone); text-decoration: none; }
+  .nav-mark span { color: var(--gold); }
+  nav a { color: #8A8275; text-decoration: none; font-size: 13px; font-weight: 500; }
+
+  /* PAGE HEADER */
+  .page-header { max-width: 1100px; margin: 0 auto; padding: 48px 48px 0; }
+  .page-header h1 { font-family: 'Playfair Display', serif; font-size: 32px; margin-bottom: 6px; }
+  .page-header p { font-size: 14px; color: var(--drift); }
+
+  /* FILTERS */
+  .filters {
+    max-width: 1100px; margin: 0 auto; padding: 20px 48px;
+    display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+  }
+  .filter-btn {
+    padding: 7px 16px; border-radius: 6px; border: 1px solid var(--sand);
+    background: white; font-size: 12px; font-weight: 500; color: var(--drift);
+    cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.15s;
+  }
+  .filter-btn:hover { border-color: var(--gold); color: var(--obsidian); }
+  .filter-btn.active { background: var(--obsidian); color: var(--bone); border-color: var(--obsidian); }
+  .filter-sort {
+    margin-left: auto; font-size: 12px; color: var(--drift);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .filter-sort select {
+    border: 1px solid var(--sand); border-radius: 5px; padding: 6px 10px;
+    font-size: 12px; font-family: 'DM Sans', sans-serif; background: white; color: var(--obsidian);
+  }
+
+  /* GRID */
+  .grid {
+    max-width: 1100px; margin: 0 auto; padding: 12px 48px 60px;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
+  }
+
+  /* CARD */
+  .card {
+    background: white; border: 1px solid var(--sand); border-radius: 10px;
+    padding: 24px; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer;
+  }
+  .card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(26,26,24,0.06); }
+
+  .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+  .card-badge {
+    font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em;
+    padding: 3px 8px; border-radius: 3px;
+  }
+  .badge-wave-zero { background: #EDE8DF; color: var(--drift); }
+  .badge-open { background: var(--gold); color: var(--obsidian); }
+  .badge-sold-out { background: var(--obsidian); color: var(--bone); }
+
+  .card-trend {
+    font-family: 'DM Mono', monospace; font-size: 10px; display: flex; align-items: center; gap: 3px;
+  }
+  .trend-up { color: var(--green); }
+  .trend-flat { color: var(--drift); }
+  .trend-down { color: var(--red); }
+
+  .card-name { font-family: 'Playfair Display', serif; font-size: 20px; margin-bottom: 3px; }
+  .card-founder { font-size: 12px; color: var(--drift); margin-bottom: 10px; }
+  .card-founder .verified { color: var(--green); font-size: 11px; }
+  .card-desc { font-size: 13px; color: var(--drift); line-height: 1.55; margin-bottom: 16px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .card-category {
+    display: inline-block; font-size: 10px; color: var(--blue); background: #F0F4F7;
+    padding: 2px 8px; border-radius: 3px; margin-bottom: 14px;
+  }
+
+  /* WAVE PROGRESS (mini) */
+  .card-wave { margin-bottom: 14px; }
+  .card-wave-label { font-size: 10px; color: var(--drift); margin-bottom: 4px; display: flex; justify-content: space-between; }
+  .card-wave-label span { font-family: 'DM Mono', monospace; }
+  .card-bar { height: 4px; background: #EDE8DF; border-radius: 2px; overflow: hidden; }
+  .card-bar-fill { height: 100%; border-radius: 2px; }
+  .fill-gold { background: var(--gold); }
+  .fill-green { background: var(--green); }
+
+  /* CARD BOTTOM */
+  .card-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
+  .card-price-label { font-size: 10px; color: var(--drift); margin-bottom: 1px; }
+  .card-price { font-family: 'DM Mono', monospace; font-size: 18px; font-weight: 500; }
+  .card-score {
+    text-align: right;
+  }
+  .card-score-label { font-size: 10px; color: var(--drift); margin-bottom: 1px; }
+  .card-score-val { font-family: 'DM Mono', monospace; font-size: 16px; font-weight: 500; color: var(--gold); }
+
+  /* EMPTY STATE */
+  .card-empty {
+    background: transparent; border: 2px dashed var(--sand); border-radius: 10px;
+    padding: 24px; display: flex; align-items: center; justify-content: center;
+    min-height: 280px; text-align: center;
+  }
+  .card-empty p { font-size: 14px; color: var(--drift); line-height: 1.6; }
+  .card-empty a { color: var(--gold); text-decoration: none; font-weight: 600; }
+
+  @media (max-width: 900px) {
+    .grid { grid-template-columns: 1fr; padding: 12px 20px 40px; }
+    .page-header, .filters { padding-left: 20px; padding-right: 20px; }
+    nav { padding: 14px 20px; }
+  }
+  @media (min-width: 901px) and (max-width: 1100px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-mark">KA<span>§§</span>A</a>
+  <a href="#">List Your Product</a>
+</nav>
+
+<div class="page-header">
+  <h1>Listings</h1>
+  <p>Founding seats in products that matter.</p>
+</div>
+
+<div class="filters">
+  <button class="filter-btn active">All</button>
+  <button class="filter-btn">AI Governance</button>
+  <button class="filter-btn">Developer Tools</button>
+  <button class="filter-btn">Productivity</button>
+  <button class="filter-btn">Commerce</button>
+  <div class="filter-sort">
+    Sort by
+    <select>
+      <option>Trending</option>
+      <option>Newest</option>
+      <option>Price: Low → High</option>
+      <option>Score</option>
+    </select>
+  </div>
+</div>
+
+<div class="grid">
+
+  <!-- CARD 1: COMMAND — post Wave Zero, Wave 2 active -->
+  <div class="card">
+    <div class="card-top">
+      <span class="card-badge badge-open">Wave 2 · Open</span>
+      <span class="card-trend trend-up">↗ Rising</span>
+    </div>
+    <div class="card-name">COMMAND</div>
+    <div class="card-founder">Ello Cello LLC <span class="verified">✓</span></div>
+    <div class="card-category">AI Governance</div>
+    <div class="card-desc">Operations console for AI governance. Configure agent constraints, compression protocols, and audit trails.</div>
+    <div class="card-wave">
+      <div class="card-wave-label">
+        <span>Wave 2</span>
+        <span>3 of 5 left</span>
+      </div>
+      <div class="card-bar"><div class="card-bar-fill fill-gold" style="width:40%"></div></div>
+    </div>
+    <div class="card-bottom">
+      <div>
+        <div class="card-price-label">Current price</div>
+        <div class="card-price">$3,840</div>
+      </div>
+      <div class="card-score">
+        <div class="card-score-label">Score</div>
+        <div class="card-score-val">8.4</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 2: Wave Zero in progress -->
+  <div class="card">
+    <div class="card-top">
+      <span class="card-badge badge-wave-zero">Wave Zero</span>
+      <span class="card-trend trend-up">↗ Rising</span>
+    </div>
+    <div class="card-name">Superdesign</div>
+    <div class="card-founder">Jason Zhou <span class="verified">✓</span></div>
+    <div class="card-category">Developer Tools</div>
+    <div class="card-desc">AI product designer for VS Code, Cursor, and Windsurf. Design systems from natural language.</div>
+    <div class="card-wave">
+      <div class="card-wave-label">
+        <span>Wave Zero</span>
+        <span>18 of 25 filled</span>
+      </div>
+      <div class="card-bar"><div class="card-bar-fill fill-green" style="width:72%"></div></div>
+    </div>
+    <div class="card-bottom">
+      <div>
+        <div class="card-price-label">Wave Zero price</div>
+        <div class="card-price">$30</div>
+      </div>
+      <div class="card-score">
+        <div class="card-score-label">Score</div>
+        <div class="card-score-val">7.1</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 3: Wave Zero early -->
+  <div class="card">
+    <div class="card-top">
+      <span class="card-badge badge-wave-zero">Wave Zero</span>
+      <span class="card-trend trend-flat">→ Steady</span>
+    </div>
+    <div class="card-name">Dvina</div>
+    <div class="card-founder">Dvina Labs <span class="verified">✓</span></div>
+    <div class="card-category">Productivity</div>
+    <div class="card-desc">Private AI connecting 120+ apps. Governed automation for teams that care about data boundaries.</div>
+    <div class="card-wave">
+      <div class="card-wave-label">
+        <span>Wave Zero</span>
+        <span>6 of 25 filled</span>
+      </div>
+      <div class="card-bar"><div class="card-bar-fill fill-green" style="width:24%"></div></div>
+    </div>
+    <div class="card-bottom">
+      <div>
+        <div class="card-price-label">Wave Zero price</div>
+        <div class="card-price">$30</div>
+      </div>
+      <div class="card-score">
+        <div class="card-score-label">Score</div>
+        <div class="card-score-val">6.3</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 4: Post Wave Zero, Wave 1 active -->
+  <div class="card">
+    <div class="card-top">
+      <span class="card-badge badge-open">Wave 1 · Open</span>
+      <span class="card-trend trend-up">↗ Rising</span>
+    </div>
+    <div class="card-name">Instruct</div>
+    <div class="card-founder">Instruct AI <span class="verified">✓</span></div>
+    <div class="card-category">Developer Tools</div>
+    <div class="card-desc">Build autonomous AI agents with plain English. No code, no config files, just describe what you need.</div>
+    <div class="card-wave">
+      <div class="card-wave-label">
+        <span>Wave 1</span>
+        <span>12 of 30 left</span>
+      </div>
+      <div class="card-bar"><div class="card-bar-fill fill-gold" style="width:60%"></div></div>
+    </div>
+    <div class="card-bottom">
+      <div>
+        <div class="card-price-label">Current price</div>
+        <div class="card-price">$480</div>
+      </div>
+      <div class="card-score">
+        <div class="card-score-label">Score</div>
+        <div class="card-score-val">7.8</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 5: Wave Zero just started -->
+  <div class="card">
+    <div class="card-top">
+      <span class="card-badge badge-wave-zero">Wave Zero</span>
+      <span class="card-trend trend-flat">→ New</span>
+    </div>
+    <div class="card-name">Aident AI</div>
+    <div class="card-founder">Aident Inc <span class="verified">✓</span></div>
+    <div class="card-category">AI Governance</div>
+    <div class="card-desc">Turn plain-English SOPs into deterministic agent playbooks with human approval gates.</div>
+    <div class="card-wave">
+      <div class="card-wave-label">
+        <span>Wave Zero</span>
+        <span>2 of 25 filled</span>
+      </div>
+      <div class="card-bar"><div class="card-bar-fill fill-green" style="width:8%"></div></div>
+    </div>
+    <div class="card-bottom">
+      <div>
+        <div class="card-price-label">Wave Zero price</div>
+        <div class="card-price">$30</div>
+      </div>
+      <div class="card-score">
+        <div class="card-score-label">Score</div>
+        <div class="card-score-val">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 6: Sold out listing -->
+  <div class="card" style="opacity: 0.7;">
+    <div class="card-top">
+      <span class="card-badge badge-sold-out">Sold Out</span>
+      <span class="card-trend trend-up">↗ Rising</span>
+    </div>
+    <div class="card-name">Flux</div>
+    <div class="card-founder">Flux Labs <span class="verified">✓</span></div>
+    <div class="card-category">Commerce</div>
+    <div class="card-desc">Custom AI agents inside iMessage. No coding required. Personal commerce assistant.</div>
+    <div class="card-wave">
+      <div class="card-wave-label">
+        <span>All waves complete</span>
+        <span>40 of 40 sold</span>
+      </div>
+      <div class="card-bar"><div class="card-bar-fill fill-gold" style="width:100%"></div></div>
+    </div>
+    <div class="card-bottom">
+      <div>
+        <div class="card-price-label">Final wave price</div>
+        <div class="card-price" style="color: var(--drift);">$1,200</div>
+      </div>
+      <div class="card-score">
+        <div class="card-score-label">Score</div>
+        <div class="card-score-val">9.1</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EMPTY / CTA -->
+  <div class="card-empty">
+    <div>
+      <p>Have a live product?<br><a href="#">List it on KA§§A →</a></p>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
