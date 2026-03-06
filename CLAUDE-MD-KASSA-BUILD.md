@@ -37,54 +37,62 @@ This is the product. Craigslist energy. A page of listing cards.
 - No scoring system. No trend indicators. Not yet.
 - Fill velocity IS the implicit score -- wave progress bar tells the story.
 
-### 2. THE CASCADE (engine formula)
+### 2. THE CASCADE (Tetractys engine at launch)
 
-Founder picks a listing type, provides ONE number. System generates the entire cascade.
+Founder picks a listing type, provides a base price. System generates the entire cascade using the Tetractys structure.
 
-**The engine:**
-
-```
-Seat pattern:    5 - 3 - 5 - 3  (16 seats, Enterprise)
-Multiplier:      1 - 2 - 3 - 4
-Weight sum:      5(1) + 3(2) + 5(3) + 3(4) = 38
-Divisor:         38
-
-ENTRY A: founder inputs total target --> base = total / 38
-ENTRY B: founder inputs starting seat price --> total = base x 38
-```
-
-**Output (COMMAND as proof, base = $65,000):**
+**The launch engine (Tetractys):**
 
 ```
-C1: 5 seats x $65,000  (Internal)  =   $325,000
-C2: 3 seats x $130,000 (Embedded)  =   $390,000
-C3: 5 seats x $195,000 (Internal)  =   $975,000
-C4: 3 seats x $260,000 (Embedded)  =   $780,000
--------------------------------------------------
-16 seats                              $2,470,000
+Seat pattern:    5 - 4 - 3 - 2 - 1  (15 seats)
+Multiplier:      Founder picks (default 1.5x)
+Natural scarcity: more seats cheap, fewer seats expensive
 ```
 
-**Multiplier presets (founder chooses curve steepness):**
+**Example at $5,000 base, 1.5x:**
 
 ```
-Aggressive (1-2-3-4):     divisor 38   | +100%, +50%, +33%
-Moderate (1-1.5-2-2.5):   divisor 27   | +50%, +33%, +25%
-Gentle (1-1.25-1.5-1.75): divisor 21.5 | +25%, +20%, +17%
+W1: 5 seats x $5,000  =  $25,000
+W2: 4 seats x $7,500  =  $30,000
+W3: 3 seats x $11,250 =  $33,750
+W4: 2 seats x $16,875 =  $33,750
+W5: 1 seat  x $25,313 =  $25,313
+------------------------------------------------
+15 seats                   $147,813
 ```
 
-**Internal vs Embedded:**
-- C1 + C3 = Internal (use inside your org, 5 seats each)
-- C2 + C4 = Embedded (put in your product and ship to customers, 3 seats each)
+**Why Tetractys for launch:**
+- Smooth 50% steps (at 1.5x) -- less friction, more momentum
+- Natural seat scarcity (5 down to 1) -- built into the math
+- Accessible entry points -- people can actually buy W1
+- Every layer earns roughly equal weight
+- Gets people moving instead of slamming a wall after W1
 
-**Wave rules:**
-- Each wave must sell through before the next opens
-- No admin override on sell-through gates
-- Per-seat weight is flat across all waves (2.6% of total at Aggressive)
+**Multiplier options:**
+
+```
+1.5x (default):  +50% per wave -- smooth, recommended for launch
+2.0x (steep):    +100% per wave -- aggressive, strong trigger
+1.25x (gentle):  +25% per wave -- slow crawl, low risk
+```
+
+**Two entry points, same output:**
+
+```
+ENTRY A: "My starting seat price is $5,000" --> system generates 5 waves
+ENTRY B: "I want to raise $147,813" --> system back-calculates base price
+```
+
+**LATER OPTION: CASCADE WAVE (not at launch)**
+
+The 5-3-5-3 cascade with Internal/Embedded ladders and 1-2-3-4 multiplier (divisor 38) is documented in CASCADE-ENGINE-DECISIONS.md. It becomes available as a premium/enterprise option when the market is ready. For now, everything runs on Tetractys.
 
 **Listing types on the board:**
-- Enterprise (full product, few seats, high ticket)
-- SaaS (full product, more seats, lower price -- seat pattern TBD)
-- Component (plugs into other products, its own cascade)
+- Enterprise (full product, high ticket)
+- SaaS (full product, lower price)
+- Component (plugs into other products)
+
+All three use the same Tetractys engine at launch. Different base prices, same structure.
 
 **Also displayed on listing (not built yet):**
 - Distribution rights: show as "available" on product page
@@ -99,11 +107,11 @@ Founder provides:
 - Sector (select from preset list)
 - Product URL
 - Listing type (Enterprise / SaaS / Component)
-- ONE number: total target OR starting seat price
-- Multiplier: Aggressive / Moderate / Gentle
+- Base seat price (W1 price)
+- Multiplier: 1.5x (default) / 2.0x / 1.25x
 - Founder name + contact
 
-System generates the cascade from that. Founder confirms. Done.
+System generates the 5-wave Tetractys from that. Founder confirms. Done.
 
 Submitted listings appear on the board as PENDING (grayed out, not clickable). Luthen reviews and approves manually. Approved listings go ACTIVE.
 
@@ -217,7 +225,7 @@ HOMEPAGE (IS the board)
   |
   \-- Board reads wave state from stored product/cascade data
 
-LISTING FORM --> founder submits --> CASCADE FORMULA (total/38) --> stored
+LISTING FORM --> founder submits --> TETRACTYS FORMULA (base x 1.5^wave) --> stored
                                               |
 BOARD <-- reads wave state <-- PRODUCT DATA + WAVE TABLE
                                               |
@@ -230,9 +238,15 @@ The homepage has NO direct connection to the engine. The listing form feeds the 
 
 ---
 
-## FIRST LISTING
+## FIRST LISTINGS
 
-COMMAND is the first listing on the board. Enterprise cascade. Base = $65,000. Divisor = 38. Total = $2,470,000. 16 seats across 4 waves (5-3-5-3). Use it as the proof that the pipe works.
+Three listings on the board at launch:
+
+**KA$$A (the platform itself)** -- SaaS/Component listing. Tetractys at accessible pricing. This fills first and proves the engine.
+
+**COMMAND** -- Enterprise flagship. Higher pricing. Anchor listing that shows the range of the board. May use the cascade wave structure (5-3-5-3) documented in CASCADE-ENGINE-DECISIONS.md or Tetractys at enterprise pricing. TBD.
+
+**DEPLOY** -- When ready. Second enterprise listing alongside COMMAND.
 
 ---
 
@@ -257,18 +271,19 @@ COMMAND is the first listing on the board. Enterprise cascade. Base = $65,000. D
 
 ## TO DO (unresolved from this session)
 
-- [ ] SaaS preset: seat pattern, wave count, divisor
-- [ ] The one number: clarify that it's either total target (ending point) or base seat price (starting point) — both doors same output, but naming/UX needs to be clean
-- [ ] Component listing type: own cascade structure or shares Enterprise/SaaS presets?
+- [ ] KA$$A's own listing: what exactly is being sold? Component (cascade engine)? SaaS (platform access)? Base price?
+- [ ] COMMAND listing: stay on Tetractys at enterprise pricing or use cascade wave (5-3-5-3)?
+- [ ] The one number: clarify Entry A vs Entry B UX (total target vs base price)
+- [ ] Component listing type: any structural differences from Enterprise/SaaS or just a label?
 - [ ] Paperwork: founder listing agreement, buyer seat agreement, terms templates, legal review
+- [ ] Transfer rights: how do transfers work at launch? Manual through Luthen?
 
 ---
 
 ## QUESTIONS TO ASK LUTHEN BEFORE PROCEEDING
 
-- [ ] SaaS preset: seat pattern and divisor?
-- [ ] Component preset: same as Enterprise or different?
-- [ ] Confirm COMMAND is 16 seats (not 17 -- the BID seat from old pricing is TBD)
+- [ ] KA$$A listing: what's the base price and what does a seat confer?
+- [ ] COMMAND: Tetractys or cascade wave? What base price on the board?
 - [ ] Fee percentage: starting number even if waived at launch?
 - [ ] Terms template: does Luthen have a lawyer or should we draft a starting template?
 - [ ] Any design/layout updates since this doc was written?

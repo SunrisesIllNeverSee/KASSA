@@ -1,6 +1,7 @@
 import { Product } from "./types";
 
-// Cascade math: wave_price = base_price × 1.6^(wave_number - 1)
+// Cascade math (Tetractys): wave_price = base_price × 1.5^(wave_number - 1)
+// Seat pattern: 5 - 4 - 3 - 2 - 1 (15 seats total)
 // Sell-through gate: wave N+1 cannot open until wave N is full
 
 export const products: Product[] = [
@@ -18,12 +19,13 @@ export const products: Product[] = [
     productUrl: "https://command.kassa.com",
     status: "active",
     waves: [
-      { id: "w1-1", productId: "1", waveNumber: 1, seatPrice: 2400, totalSeats: 5, seatsSold: 5, status: "sold_out" },
-      { id: "w1-2", productId: "1", waveNumber: 2, seatPrice: 3840, totalSeats: 5, seatsSold: 2, status: "active" },
-      { id: "w1-3", productId: "1", waveNumber: 3, seatPrice: 6144, totalSeats: 4, seatsSold: 0, status: "upcoming" },
-      { id: "w1-4", productId: "1", waveNumber: 4, seatPrice: 9830, totalSeats: 3, seatsSold: 0, status: "upcoming" },
+      { id: "w1-1", productId: "1", waveNumber: 1, seatPrice: 2400,  totalSeats: 5, seatsSold: 5, status: "sold_out" },
+      { id: "w1-2", productId: "1", waveNumber: 2, seatPrice: 3600,  totalSeats: 4, seatsSold: 2, status: "active"   },
+      { id: "w1-3", productId: "1", waveNumber: 3, seatPrice: 5400,  totalSeats: 3, seatsSold: 0, status: "upcoming" },
+      { id: "w1-4", productId: "1", waveNumber: 4, seatPrice: 8100,  totalSeats: 2, seatsSold: 0, status: "upcoming" },
+      { id: "w1-5", productId: "1", waveNumber: 5, seatPrice: 12150, totalSeats: 1, seatsSold: 0, status: "upcoming" },
     ],
-    totalSeats: 17,
+    totalSeats: 15,
     totalSeatsSold: 7,
   },
 ];
@@ -51,7 +53,7 @@ export function generateCascade(
   seatCounts: number[],
   productId: string
 ): { waves: Product["waves"]; totalSeats: number } {
-  const multiplier = 1.6;
+  const multiplier = 1.5;
   const waves = seatCounts.map((seats, i) => ({
     id: `w${productId}-${i + 1}`,
     productId,

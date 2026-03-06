@@ -115,7 +115,7 @@ export default function ListProductPage() {
               placeholder="e.g. 2400"
             />
             <p className="text-[11px] text-driftwood mt-1.5">
-              Each subsequent wave multiplies by 1.6×. Wave 2 = price × 1.6, Wave 3 = price × 2.56, etc.
+              Each subsequent wave multiplies by 1.5×. Wave 2 = price × 1.5, Wave 3 = price × 2.25, etc.
             </p>
           </div>
 

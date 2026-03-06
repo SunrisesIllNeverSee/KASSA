@@ -11,7 +11,7 @@ export default function CascadePanel({ product }: { product: Product }) {
         Wave Cascade
       </h3>
       <p className="text-xs text-driftwood mb-5">
-        Each wave must sell out before the next opens. Price escalates 1.6× per wave.
+        Each wave must sell out before the next opens. Price escalates 1.5× per wave.
       </p>
 
       <div className="space-y-4">

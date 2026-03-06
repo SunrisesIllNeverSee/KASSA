@@ -292,15 +292,60 @@ The cascade sets the market price. Distribution and white-label are priced RELAT
 
 ---
 
+---
+
+## LAUNCH DECISION: TETRACTYS IS THE DEFAULT ENGINE
+
+**Decision made end of session 2026-03-05.**
+
+The cascade wave (5-3-5-3, divisor 38, 1-2-3-4 multiplier) is proven and documented above. But for launch, the Tetractys structure is the default engine. The cascade wave becomes a premium/enterprise option later.
+
+**Why:** The cascade wave's first jump is +100% (doubles immediately). That's a wall. The Tetractys at 1.5x gives a smooth +50% per wave. Less friction. More momentum. Gets people moving. Better for cold start.
+
+**Launch engine (Tetractys):**
+
+```
+Seat pattern:    5 - 4 - 3 - 2 - 1  (15 seats)
+Multiplier:      1.5x per wave (default)
+Options:         1.25x (gentle) / 1.5x (default) / 2.0x (steep)
+
+Example at $5,000 base, 1.5x:
+W1: 5 seats x $5,000  =  $25,000
+W2: 4 seats x $7,500  =  $30,000
+W3: 3 seats x $11,250 =  $33,750
+W4: 2 seats x $16,875 =  $33,750
+W5: 1 seat  x $25,313 =  $25,313
+---------------------------------
+15 seats        Total:   $147,813
+```
+
+**Cascade wave (later option):**
+
+```
+Seat pattern:    5 - 3 - 5 - 3  (16 seats)
+Multiplier:      1-2-3-4 (divisor 38)
+Internal/Embedded ladders
+All mechanics documented above in this file
+Activates when market is ready for aggressive triggers
+```
+
+**Board day one:**
+- KA$$A itself listed (accessible pricing, Tetractys)
+- COMMAND listed (enterprise flagship, structure TBD)
+- Other founder listings as they come
+
+---
+
 ## STILL TBD
 
-- [ ] SaaS preset: seat pattern and divisor (different from Enterprise 5-3-5-3?)
-- [ ] SaaS: does it use Internal/Embedded ladders or a different structure?
+- [ ] KA$$A listing: what's being sold and at what base price?
+- [ ] COMMAND on the board: Tetractys at enterprise pricing or cascade wave?
 - [ ] Cooling period between cascade reset: 30 / 60 / 90 days?
 - [ ] Roll-forward discount: standard rate or purely negotiated?
 - [ ] Kill switch thresholds: exact floor and ceiling numbers
 - [ ] Wave Zero Tetractys vouch mechanic: deferred until agent traffic exists
 - [ ] CW3 / Seat XVII (BID seat): how does the final seat work in the preset?
+- [ ] Transfer mechanics at launch: manual through Luthen?
 
 ---
 
