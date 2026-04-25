@@ -1,0 +1,17 @@
+{
+  "_comment": "Bound-projections K schema from K-Governed Voice Architecture Build Doc (voiceai-gpt-scispace, lines 3295-3304). Each channel independently extracted and hashed; parent_hash binds them. Cascaded systems = K with only K_text populated; S2S = K fused and hidden; this architecture = K exposed, channeled, governed.",
+  "K": {
+    "parent_hash": "SHA-256",
+    "channels": {
+      "K_text":   { "content": "<lexical content>",          "hash": "SHA-256", "extractor_version": "<semver>" },
+      "K_pros":   { "content": "<prosodic structure>",        "hash": "SHA-256", "extractor_version": "<semver>" },
+      "K_tmp":    { "content": "<temporal behavior>",         "hash": "SHA-256", "extractor_version": "<semver>" },
+      "K_affect": { "content": "<acoustic affect markers>",   "hash": "SHA-256", "extractor_version": "<semver>" }
+    },
+    "provenance": {
+      "raw_input_ref": "<pointer to immutable raw audio + transcript>",
+      "extraction_timestamp": "<ISO-8601>",
+      "sig_weights": "<SigSystem weight map snapshot used for this extraction>"
+    }
+  }
+}
