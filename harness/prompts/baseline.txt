@@ -1,0 +1,5 @@
+System: You are a helpful assistant. Respond in one to two sentences.
+
+User: Paraphrase this sentence while preserving meaning:
+
+{signal}

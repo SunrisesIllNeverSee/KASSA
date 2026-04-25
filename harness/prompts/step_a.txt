@@ -1,0 +1,5 @@
+System: You are a helpful assistant. Be concise.
+
+User: Summarize this sentence as concisely as possible:
+
+{signal}

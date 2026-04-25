@@ -1,56 +1,48 @@
 #!/usr/bin/env python3
 """
-Quick demo: Show baseline vs enforced on ONE signal.
-This proves the concept without waiting for full experiment.
+quick_demo.py — Single signal 3-condition comparison
 """
-import os
-os.environ['MPLBACKEND'] = 'Agg'
-os.chdir(os.path.dirname(__file__))
 
-from src.test_harness import recursion_test, compression_sweep
+import sys
+import run_convergence_v2 as runner
+from extraction import extract_commitment_words
 
-# Single test signal
-signal = "The tenant shall not sublet the premises without written consent."
+def run_demo(signal: str):
+    print(f"=== Commitment Conservation Quick Demo ===")
+    print(f"Signal: {signal}\n")
+    
+    origin = extract_commitment_words(signal)
+    
+    print("Running Baseline (Paraphrase)...")
+    b_turns = runner.run_baseline(signal)
+    b_stab = runner.stability_curve(b_turns, origin)
+    
+    print("Running Compression (Summarize)...")
+    c_turns = runner.run_compression(signal)
+    c_stab = runner.stability_curve(c_turns, origin)
+    
+    print("Running Gate (Enforced)...")
+    g_turns = runner.run_gate(signal)
+    g_stab = runner.stability_curve(g_turns, origin)
+    
+    print("\nResults at Iteration 10:")
+    print(f"{'Condition':15s} | {'Stability':10s} | {'Words':10s}")
+    print("-" * 40)
+    print(f"{'Baseline':15s} | {b_stab[-1]['stability']:10.2f} | {len(b_turns[-1]['output'].split()):10d}")
+    print(f"{'Compression':15s} | {c_stab[-1]['stability']:10.2f} | {len(c_turns[-1]['output'].split()):10d}")
+    print(f"{'Gate':15s} | {g_stab[-1]['stability']:10.2f} | {len(g_turns[-1]['output'].split()):10d}")
+    
+    print("\nGate Output (i10):")
+    print(f"  {g_turns[-1]['output']}")
 
-print("="*70)
-print("QUICK DEMO: Baseline vs Enforced (1 signal)")
-print("="*70)
-print(f"\nSignal: {signal}\n")
-
-# BASELINE RECURSION
-print("--- BASELINE Recursion Test ---")
-deltas_base = recursion_test(signal, depth=5, enforce=False)
-stab_base = (1.0 - deltas_base[-1]) * 100
-print(f"✓ Baseline stability after 5 iterations: {stab_base:.1f}%\n")
-
-# ENFORCED RECURSION  
-print("--- ENFORCED Recursion Test ---")
-deltas_enf = recursion_test(signal, depth=5, enforce=True)
-stab_enf = (1.0 - deltas_enf[-1]) * 100
-print(f"✓ Enforced stability after 5 iterations: {stab_enf:.1f}%\n")
-
-# BASELINE COMPRESSION
-print("--- BASELINE Compression Sweep ---")
-_, fids_base = compression_sweep(signal, enforce=False)
-avg_base = sum(fids_base) / len(fids_base) * 100
-print(f"✓ Baseline avg fidelity: {avg_base:.1f}%\n")
-
-# ENFORCED COMPRESSION
-print("--- ENFORCED Compression Sweep ---")
-_, fids_enf = compression_sweep(signal, enforce=True)
-avg_enf = sum(fids_enf) / len(fids_enf) * 100
-print(f"✓ Enforced avg fidelity: {avg_enf:.1f}%\n")
-
-# RESULTS
-print("="*70)
-print("RESULTS:")
-print("="*70)
-print(f"Recursion Stability:")
-print(f"  Baseline:  {stab_base:5.1f}%")
-print(f"  Enforced:  {stab_enf:5.1f}%")
-print(f"  Gain:      {stab_enf - stab_base:+5.1f} pp\n")
-print(f"Compression Fidelity:")
-print(f"  Baseline:  {avg_base:5.1f}%")
-print(f"  Enforced:  {avg_enf:5.1f}%")
-print(f"  Gain:      {avg_enf - avg_base:+5.1f} pp\n")
-print("="*70)
+if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        signal = sys.argv[1]
+    else:
+        signal = "The user must provide a valid email address before proceeding."
+    
+    if not runner.OPENAI_KEY:
+        print("Error: OPENAI_API_KEY not set.")
+        sys.exit(1)
+        
+    run_demo(signal)

@@ -18,7 +18,7 @@ Instead of passing text through a chain of agents (where errors compound), this 
 ## Repository Structure
 
 - `/docs` — Deep Wiki, Architecture Summaries, and Peer Review records.
-- `/harness` — Commitment Conservation Harness (CCH) and experimental results (EXP-001..007).
+- `/harness` — Commitment Conservation Harness (CCH): runner scripts, corpora, prompts, and archived experimental results (EXP-001..007).
 - `/demo` — Commitment Kernel Demo (v6) and latency simulation artifacts.
 - `/schema` — K bound projections JSON schema.
 - `/images` — Architectural diagrams (Standard vs S1 vs S2 vs S3).
@@ -29,6 +29,13 @@ Instead of passing text through a chain of agents (where errors compound), this 
 - **NLI=1.00** (Perfect Conservation) for Regime A signals.
 - **Fixpoint at Iteration 1** — commitment locked at first utterance.
 - **~1.3s Per-Turn Latency** projected for governed inline execution.
+
+## Published Records
+
+- **Paper (V.05):** [10.5281/zenodo.19110620](https://doi.org/10.5281/zenodo.19110620)
+- **Experimental Record (EXP-001–007):** [10.5281/zenodo.19105225](https://doi.org/10.5281/zenodo.19105225)
+- **Public Harness Workflow:** [10.5281/zenodo.19109397](https://doi.org/10.5281/zenodo.19109397)
+- **Source Repository:** [github.com/SunrisesIllNeverSee/commitment-conservation](https://github.com/SunrisesIllNeverSee/commitment-conservation)
 
 ## The Maturation Path
 

@@ -40,12 +40,21 @@ CITATION = {
 
 # ── Config ────────────────────────────────────────────────────────────────────
 
-OPENAI_KEY   = (Path.home() / ".hange/openai_api_key").read_text().strip()
+import os
+_key_file = Path.home() / ".hange/openai_api_key"
+OPENAI_KEY = os.environ.get("OPENAI_API_KEY") or (
+    _key_file.read_text().strip() if _key_file.exists() else ""
+)
+if not OPENAI_KEY:
+    OPENAI_KEY = ""
+
 OPENAI_URL   = "https://api.openai.com/v1/chat/completions"
 OPENAI_MODEL = "gpt-4o-mini"
 
-CORPUS_PATH  = Path(__file__).parent.parent / "corpus/canonical_corpus.json"
-EXPERIMENTS_DIR = Path(__file__).parent.parent / "experiments"
+CORPUS_PATH  = Path(__file__).parent / "canonical_corpus.json"
+EXPERIMENTS_DIR = Path(__file__).parent / "results"
+
+from extraction import HARD_MODALS, COMMITMENT_CONTENT, extract_commitment_words, jaccard
 
 # EXP-005: anchor-preserving Step A and escalation-control Step B
 EXP005 = False  # EXP-006: standard 3-condition run (Baseline, Compression, Gate)
@@ -82,25 +91,6 @@ def next_exp_dir() -> Path:
 N_ITERATIONS = 10
 SMOKE        = False  # set False for full 20-signal run
 
-HARD_MODALS = re.compile(
-    r'\b(must|shall|cannot|required|never|always|will not|are required to'
-    r'|do not|shall not|must not|is required|are not|may not)\b',
-    re.IGNORECASE
-)
-
-# Catches imperative/compressed commitment sentences that drop the modal word.
-# After compression "You must pay $100 by Friday" → "Pay $100 by Friday" — modal gone,
-# but obligation content (amount, date, conditional) remains.
-COMMITMENT_CONTENT = re.compile(
-    r'\$\d'                               # monetary amount
-    r'|\b\d+%\b'                          # percentage obligation
-    r'|\b(monday|tuesday|wednesday|thursday|friday|saturday|sunday)\b'
-    r'|\b(january|february|march|april|may|june|july|august'
-    r'|september|october|november|december)\b'
-    r'|\b(if|unless|when)\b.{0,60}\b(deal|agreement|contract|payment|obligation|close|finalize)\b',
-    re.IGNORECASE
-)
-
 # ── LLM ──────────────────────────────────────────────────────────────────────
 
 def llm(system: str, prompt: str, max_tokens: int = 150) -> str:
@@ -130,35 +120,6 @@ def llm(system: str, prompt: str, max_tokens: int = 150) -> str:
     return ""
 
 # ── Metrics ───────────────────────────────────────────────────────────────────
-
-def extract_commitment_words(text: str) -> set:
-    """
-    Extract the key words from commitment-bearing sentences.
-    Returns a set of normalized words (>2 chars) from:
-      - Sentences containing hard modals (must/shall/required/cannot/never/always/...)
-      - Sentences containing commitment content markers (amounts, dates, conditionals)
-        — catches imperative form after compression ("Pay $100 by Friday...")
-
-    Split on sentence boundaries INCLUDING semicolons so incidental clauses
-    ("it's likely rainy, so plan accordingly") don't pollute the commitment set.
-    Public proxy extractor (modal-pattern sieve + content extension, Fig. 4 of paper).
-    """
-    sentences = re.split(r'(?<=[.!?;])\s+', text.strip())
-    words = set()
-    for sent in sentences:
-        if HARD_MODALS.search(sent) or COMMITMENT_CONTENT.search(sent):
-            words.update(
-                w.lower() for w in re.findall(r'\b[a-zA-Z0-9\$%]+\b', sent)
-                if len(w) > 2
-            )
-    return words
-
-def jaccard(a: set, b: set) -> float:
-    if not a and not b:
-        return 1.0
-    if not a or not b:
-        return 0.0
-    return round(len(a & b) / len(a | b), 3)
 
 def wc(text: str) -> int:
     return len(text.split())

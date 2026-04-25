@@ -1,144 +1,53 @@
 #!/usr/bin/env python3
 """
-Compare baseline vs enforced compression for commitment conservation.
-This is the killer experiment: showing enforcement improves stability.
+compare_enforcement.py — Baseline vs Gate Comparison
 """
-import json
+
 import sys
 import os
+from pathlib import Path
+import run_convergence_v2 as runner
+from extraction import extract_commitment_words, jaccard
 
-# Set non-GUI backend
-os.environ['MPLBACKEND'] = 'Agg'
-
-# Change to harness directory to make imports work
-os.chdir(os.path.dirname(__file__))
-
-from src.test_harness import recursion_test, compression_sweep
-
-# Original signals (strongest demonstration: 20% → 60%, +40pp)
-signals = [
-    "This function must return an integer.",
-    "The tenant shall not sublet the premises without written consent.",
-    "You must wear a helmet while cycling.",
-    "All passwords must be at least 8 characters long.",
-    "The budget cannot exceed $5000."
-]
-
-print("="*70)
-print("COMMITMENT CONSERVATION: BASELINE vs ENFORCED COMPARISON")
-print("="*70)
-
-results = {
-    "baseline": {"recursion": [], "compression": []},
-    "enforced": {"recursion": [], "compression": []}
-}
-
-for i, signal in enumerate(signals, 1):
-    print(f"\n{'#'*70}")
-    print(f"[{i}/5] Signal: {signal}")
-    print(f"{'#'*70}")
+def compare():
+    print("=== Commitment Enforcement Comparison ===")
     
-    # BASELINE
-    print(f"\n--- BASELINE (no enforcement) ---")
-    print("  Running recursion test (depth=10)...")
-    deltas_base = recursion_test(signal, depth=10, enforce=False)
-    stability_base = 1.0 - deltas_base[-1]
-    results["baseline"]["recursion"].append({
-        "signal": signal,
-        "deltas": deltas_base,
-        "final_stability": stability_base
-    })
-    print(f"    ✓ Baseline stability: {stability_base*100:.1f}%")
-    
-    print("  Running compression sweep...")
-    sigmas_base, fids_base = compression_sweep(signal, enforce=False)
-    avg_fid_base = sum(fids_base) / len(fids_base)
-    results["baseline"]["compression"].append({
-        "signal": signal,
-        "avg_fidelity": avg_fid_base,
-        "fidelities": fids_base
-    })
-    print(f"    ✓ Baseline avg fidelity: {avg_fid_base*100:.1f}%")
-    
-    # ENFORCED
-    print(f"\n--- ENFORCED (commitment preservation) ---")
-    print("  Running recursion test (depth=10)...")
-    deltas_enf = recursion_test(signal, depth=10, enforce=True)
-    stability_enf = 1.0 - deltas_enf[-1]
-    results["enforced"]["recursion"].append({
-        "signal": signal,
-        "deltas": deltas_enf,
-        "final_stability": stability_enf
-    })
-    print(f"    ✓ Enforced stability: {stability_enf*100:.1f}%")
-    
-    print("  Running compression sweep...")
-    sigmas_enf, fids_enf = compression_sweep(signal, enforce=True)
-    avg_fid_enf = sum(fids_enf) / len(fids_enf)
-    results["enforced"]["compression"].append({
-        "signal": signal,
-        "avg_fidelity": avg_fid_enf,
-        "fidelities": fids_enf
-    })
-    print(f"    ✓ Enforced avg fidelity: {avg_fid_enf*100:.1f}%")
-    
-    # Improvement
-    improvement_stability = (stability_enf - stability_base) * 100
-    improvement_fidelity = (avg_fid_enf - avg_fid_base) * 100
-    print(f"\n  📊 IMPROVEMENTS:")
-    print(f"     Stability:  {improvement_stability:+.1f} pp")
-    print(f"     Fidelity:   {improvement_fidelity:+.1f} pp")
+    # 5 test signals from different categories
+    signals = [
+        ("The user must provide a valid email address before proceeding.", "Mandate"),
+        ("All payments shall be processed within 30 days of receipt.", "Financial"),
+        ("Do not share your password with anyone; keep it secure.", "Security"),
+        ("If the contract is signed, the deal closes on Friday.", "Conditional"),
+        ("Always wear safety goggles while operating the machinery.", "Instructional")
+    ]
 
-# Aggregate statistics
-avg_stab_base = sum(r["final_stability"] for r in results["baseline"]["recursion"]) / len(signals)
-avg_stab_enf = sum(r["final_stability"] for r in results["enforced"]["recursion"]) / len(signals)
-avg_fid_base = sum(r["avg_fidelity"] for r in results["baseline"]["compression"]) / len(signals)
-avg_fid_enf = sum(r["avg_fidelity"] for r in results["enforced"]["compression"]) / len(signals)
+    print(f"{'Category':15s} | {'Condition':10s} | {'i1 Stab':7s} | {'i10 Stab':7s} | {'Gain':6s}")
+    print("-" * 60)
 
-print(f"\n{'='*70}")
-print(f"FINAL RESULTS (n=5 signals, 10 iterations each)")
-print(f"{'='*70}")
-print(f"\nRECURSION STABILITY:")
-print(f"  Baseline:  {avg_stab_base*100:5.1f}%")
-print(f"  Enforced:  {avg_stab_enf*100:5.1f}%")
-print(f"  Gain:      {(avg_stab_enf - avg_stab_base)*100:+5.1f} pp")
+    for signal, cat in signals:
+        origin = extract_commitment_words(signal)
+        
+        # Run baseline
+        b_turns = runner.run_baseline(signal)
+        b_curve = runner.stability_curve(b_turns, origin)
+        
+        # Run gate
+        g_turns = runner.run_gate(signal)
+        g_curve = runner.stability_curve(g_turns, origin)
+        
+        b1 = b_curve[0]["stability"] if b_curve else 0
+        b10 = b_curve[-1]["stability"] if b_curve else 0
+        g1 = g_curve[0]["stability"] if g_curve else 0
+        g10 = g_curve[-1]["stability"] if g_curve else 0
+        
+        gain = g10 - b10
+        
+        print(f"{cat:15s} | {'Baseline':10s} | {b1:7.2f} | {b10:7.2f} |")
+        print(f"{'':15s} | {'Gate':10s} | {g1:7.2f} | {g10:7.2f} | {gain:+6.2f}")
+        print("-" * 60)
 
-print(f"\nCOMPRESSION FIDELITY:")
-print(f"  Baseline:  {avg_fid_base*100:5.1f}%")
-print(f"  Enforced:  {avg_fid_enf*100:5.1f}%")
-print(f"  Gain:      {(avg_fid_enf - avg_fid_base)*100:+5.1f} pp")
-
-print(f"\n{'='*70}")
-print(f"KEY FINDING:")
-if (avg_stab_enf - avg_stab_base) > 0.4:  # 40+ pp improvement
-    print(f"  ✓ Enforcement provides {(avg_stab_enf - avg_stab_base)*100:.0f} pp stability gain")
-    print(f"    This validates the core thesis: commitment-aware systems")
-    print(f"    dramatically outperform baseline transformers.")
-else:
-    print(f"  Enforcement improves stability by {(avg_stab_enf - avg_stab_base)*100:.1f} pp")
-print(f"{'='*70}\n")
-
-# Save results
-os.makedirs('outputs', exist_ok=True)
-with open('outputs/enforcement_comparison.json', 'w') as f:
-    json.dump({
-        "summary": {
-            "n_signals": len(signals),
-            "recursion_depth": 10,
-            "baseline": {
-                "avg_stability": avg_stab_base,
-                "avg_fidelity": avg_fid_base
-            },
-            "enforced": {
-                "avg_stability": avg_stab_enf,
-                "avg_fidelity": avg_fid_enf
-            },
-            "improvements": {
-                "stability_gain_pp": (avg_stab_enf - avg_stab_base) * 100,
-                "fidelity_gain_pp": (avg_fid_enf - avg_fid_base) * 100
-            }
-        },
-        "detailed_results": results
-    }, f, indent=2)
-
-print("✓ Detailed comparison saved to: outputs/enforcement_comparison.json")
+if __name__ == "__main__":
+    if not runner.OPENAI_KEY:
+        print("Error: OPENAI_API_KEY not set.")
+        sys.exit(1)
+    compare()

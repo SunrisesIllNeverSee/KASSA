@@ -476,6 +476,8 @@ The CCH (DOI: 10.5281/zenodo.19105225) includes:
 - 57 signals, 181 condition-signal runs
 - Measured results, not assertions
 
+The public harness workflow is archived separately: [10.5281/zenodo.19109397](https://doi.org/10.5281/zenodo.19109397)
+
 A skeptical engineer can't dismiss this as "AI generated." The demo illustrates the architecture; the harness proves the principle.
 
 ---
@@ -536,13 +538,12 @@ Owner: Ello Cello LLC
 ## Reading Order for Newcomers
 
 1. This file (you are here)
-2. `3_downloads/voiceai-gpt-scispace/attachments/K-governed-voice-architecture-build-doc.md`
-3. `3_downloads/voiceai-claude-original/attachments/001_VOICEAI_ARCHITECTURE_SUMMARY.md`
-4. `3_downloads/voiceai-claude-original/attachments/002_REVIEWER_RESPONSE.md`
-5. `4_analysis/voiceai-claude-original/ANALYSIS.md`
-6. `4_analysis/voiceai-gpt-scispace/ANALYSIS.md`
+2. `docs/K-governed-voice-architecture-build-doc.md`
+3. `docs/001_VOICEAI_ARCHITECTURE_SUMMARY.md`
+4. `docs/002_REVIEWER_RESPONSE.md`
+5. `docs/CONSERVATION_LAW_PAPER.md`
 
-Diagrams for visual reference: `3_downloads/voiceai-claude-original/images/`
+Diagrams for visual reference: `images/`
 - `diag0_standard.png` — Standard SIP→STT→LLM→TTS pipeline (baseline)
 - `diag1_s1.png` — S1 cascaded text relay (current architecture — chain dependency)
 - `diag2_s2.png` — S2 K-governed sequential (hub-and-spoke from K, sequential execution)
