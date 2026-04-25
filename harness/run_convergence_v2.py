@@ -51,7 +51,7 @@ if not OPENAI_KEY:
 OPENAI_URL   = "https://api.openai.com/v1/chat/completions"
 OPENAI_MODEL = "gpt-4o-mini"
 
-CORPUS_PATH  = Path(__file__).parent / "canonical_corpus.json"
+CORPUS_PATH  = Path(__file__).parent / "corpora" / "canonical_corpus.json"
 EXPERIMENTS_DIR = Path(__file__).parent / "results"
 
 from extraction import HARD_MODALS, COMMITMENT_CONTENT, extract_commitment_words, jaccard

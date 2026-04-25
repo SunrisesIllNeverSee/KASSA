@@ -8,8 +8,13 @@ import matplotlib.patches as mpatches
 from matplotlib.colors import LinearSegmentedColormap
 import numpy as np
 import json, os
+from pathlib import Path
 
-BASE = '/Users/dericmchenry/Desktop/commitment-conservation-experiments'
+# Output dir: where this script lives (figures/). Override with FIGURES_OUT_DIR.
+BASE = os.environ.get('FIGURES_OUT_DIR', str(Path(__file__).parent))
+# Input dir for per-experiment run.json files (EXP-005/run.json, EXP-006/run.json).
+# Defaults to BASE; set EXP_DATA_DIR to point at the Zenodo experimental record.
+EXP_DATA_DIR = os.environ.get('EXP_DATA_DIR', BASE)
 FOOTER = 'MO§ES™  ·  Ello Cello LLC  ·  Patent No. 63/877,177 (Provisional)'
 
 plt.rcParams.update({
@@ -226,14 +231,14 @@ def fig2_heatmap():
 
 def fig3_conservation_curve():
     # Load EXP-005 quantified_temporal — Gate=1.00 fixpoint (best conservation example)
-    d5 = json.load(open(f'{BASE}/EXP-005/run.json'))
+    d5 = json.load(open(f'{EXP_DATA_DIR}/EXP-005/run.json'))
     qt = next(e for e in d5 if 'quantified' in e['category'])
     qt_b = [x['nli_stability'] for x in qt['baseline_nli']]
     qt_c = [x['nli_stability'] for x in qt['compression_nli']]
     qt_g = [x['nli_stability'] for x in qt['gate_nli']]
 
     # Load EXP-006 enforcement_conditionality — starkest collapse
-    d6 = json.load(open(f'{BASE}/EXP-006/run.json'))
+    d6 = json.load(open(f'{EXP_DATA_DIR}/EXP-006/run.json'))
     ec = next(e for e in d6 if 'enforcement' in e['category'])
     ec_b = [x['nli_stability'] for x in ec['baseline_nli']]
     ec_c = [x['nli_stability'] for x in ec['compression_nli']]
