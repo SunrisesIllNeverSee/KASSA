@@ -41,12 +41,15 @@ CITATION = {
 # ── Config ────────────────────────────────────────────────────────────────────
 
 import os
-_key_file = Path.home() / ".hange/openai_api_key"
+_key_file = Path.home() / ".config/openai/api_key"
 OPENAI_KEY = os.environ.get("OPENAI_API_KEY") or (
     _key_file.read_text().strip() if _key_file.exists() else ""
 )
 if not OPENAI_KEY:
-    OPENAI_KEY = ""
+    # Allow local project-level key for development (not committed)
+    local_key = Path(__file__).parent.parent / ".openai_api_key"
+    if local_key.exists():
+        OPENAI_KEY = local_key.read_text().strip()
 
 OPENAI_URL   = "https://api.openai.com/v1/chat/completions"
 OPENAI_MODEL = "gpt-4o-mini"
