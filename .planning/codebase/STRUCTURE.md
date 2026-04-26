@@ -22,6 +22,7 @@ The experimental engine used to prove the conservation of commitment under recur
 
 **`/demo` — Demonstrations**
 *   `commitment_kernel_demo_v6.html`: A web-based simulation/demo showing the latency and drift benefits of the architecture.
+*   **Live Demo URL**: [https://sunrisesillneversee.github.io/KASSA/demo/commitment_kernel_demo_v6.html](https://sunrisesillneversee.github.io/KASSA/demo/commitment_kernel_demo_v6.html)
 
 **`/schema` — Data Definitions**
 *   `K_bound_projections_schema.json`: The JSON schema defining the structure of the multi-channel Commitment Kernel K.

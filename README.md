@@ -39,7 +39,7 @@ Engineers often ask how this differs from simply using a high-performance LLM (l
 
 - `/docs` — Deep Wiki, Architecture Summaries, and Peer Review records.
 - `/harness` — Commitment Conservation Harness (CCH): runner scripts, corpora, prompts, and archived experimental results (EXP-001..007).
-- `/demo` — Commitment Kernel Demo (v6) and latency simulation artifacts.
+- `/demo` — [Live Commitment Kernel Demo (v6)](https://sunrisesillneversee.github.io/KASSA/demo/commitment_kernel_demo_v6.html) and latency simulation artifacts.
 - `/schema` — K bound projections JSON schema.
 - `/images` — Architectural diagrams (Standard vs S1 vs S2 vs S3).
 
