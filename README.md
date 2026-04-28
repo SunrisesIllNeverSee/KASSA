@@ -54,6 +54,12 @@ In single-turn demo loops, LLM APIs utilize **KV Caching**, which artificially m
 
 ---
 
-*Patent Pending: Serial No. 63/877,177*
-*Owner: DJM | Copyright: © 2026 Ello Cello LLC*
-*MO§ES™ (Modus Operandi System for Signal Encoding and Scaling Expansion)*
+## License
+
+Business Source License 1.1 — source‑available for non‑production use.
+Commercial use requires a separate license from Ello Cello LLC.
+
+Patent Pending: U.S. Serial No. 63/877,177 (Provisional), 19/426,028 (Utility)
+MO§ES™ is a trademark of Ello Cello LLC (USPTO IC 042).
+© 2026 Ello Cello LLC. All Rights Reserved.
+See [LICENSE](LICENSE) for full terms, including the Lineage Custody Clause.
