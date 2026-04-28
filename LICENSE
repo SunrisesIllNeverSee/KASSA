@@ -2,8 +2,16 @@ Business Source License 1.1
 
 Licensor:             Ello Cello LLC
 Licensed Work:        KASSA — K-Governed Voice Architecture
+Copyright:            © 2026 Ello Cello LLC. All Rights Reserved.
 Change Date:          2030-04-28
 Change License:       Apache License, Version 2.0
+
+Patent Pending:       U.S. Serial No. 63/877,177 (Provisional)
+                      U.S. Serial No. 19/426,028 (Utility)
+
+MO§ES™ is a trademark of Ello Cello LLC (USPTO IC 042).
+
+---
 
 The Licensor hereby grants you the right to copy, modify, create derivative
 works, and distribute the Licensed Work for non-production purposes only.
@@ -18,6 +26,19 @@ separate commercial license from the Licensor.
 On the Change Date, or the fourth anniversary of the first public
 distribution of the Licensed Work, whichever is earlier, the Licensed Work
 will be made available under the Change License.
+
+---
+
+Lineage Custody Clause
+
+All derivative works, modifications, and deployments must maintain a
+verifiable lineage chain back to the original Licensed Work. Lineage
+metadata (including repository origin, commit hash, and licensor identity)
+must be preserved in a machine-readable format and included with any
+distribution of the software or its derivatives. Removal or obfuscation of
+lineage metadata is prohibited.
+
+---
 
 For commercial licensing inquiries, contact:
   Ello Cello LLC
