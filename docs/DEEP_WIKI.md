@@ -289,15 +289,7 @@ Skip any of these and you lock yourself into infrastructure-only forever.
 
 ## Proprietary Stack Dependencies
 
-| Component | Location | Role |
-|-----------|----------|------|
-| SigSystem | `sig_army/main /sigsystem/sigsystem.py` | Pre-weights signal density before K extraction. 5-stage pipeline. |
-| SigArmy | `sig_army/main /signal_army/signal_army.py` | Word inventory + force ranking (8-tier). Seed layer for SigToken anchors. |
-| SigToken Recursive | `sig_army/main /sigtoken_v2/sigtoken_recursive.py` | Two-pass thread-aware SNR scorer. |
-| Conservation Law harness | `Commitment_Conservation/operational-harness/` | NLI=1.00 measurement protocol. Commitment extraction via modal sieve. |
-| CCH canonical corpus | `Commitment_Conservation/corpus/canonical_corpus.json` | 20 signals across 20 categories. Empirical foundation. |
-| EXP-003 results | `Commitment_Conservation/experiments/EXP-003/report.md` | NLI table: Gate condition holds 1.00 on most signals at i1/i5/i10. |
-| MO§ES™ Governance | Proprietary (not in repo) | lock(K) + validate() primitives. SHA-256 hash lock + O(1) validation. |
+The K-governed architecture depends on proprietary components not included in this repository — signal weighting (SigSystem), conservation measurement (the canonical CCH implementation), and governance enforcement (MO§ES™ `lock(K)` / `validate()` primitives). These are maintained separately under Ello Cello LLC. The public harness in `/harness` is a falsification proxy that exercises the conservation-law mechanics those components depend on; see [harness/ip_boundary.md](../harness/ip_boundary.md) for the boundary statement.
 
 ---
 
@@ -416,39 +408,6 @@ The architecture solves the "yap" risk by ensuring that agents never receive a "
 
 **Why this makes drift "impossible":**
 Because the agent's input context is so small and high-density (pre-engineered), its "degrees of freedom" are naturally throttled. You aren't asking the Tone Agent to "be polite"; you are feeding it a 5-token kernel that acts as its **Constitutional Boundary**. It has no "mass" to convert into a rogue narrative.
-
----
-
-## Cross-Project Connections
-
-| Project | Relationship |
-|---------|--------------|
-| `Master Build/` | Build surface. All code artifacts and specs land here. |
-| `Commitment_Conservation/` | Theory foundation. EXP-001–007 are the empirical ground for K_text conservation claims. |
-| `sig_army/` | SigSystem + SigArmy + SigToken are the pre-extraction weighting stack. |
-| `CIVITAE-OLD/` | MO§ES™ governance implementation reference. lock() and validate() pattern lives here. |
-| `prospectus-commitment-theory` | "Commit state before intelligence branches" is a prospectus-level claim. Substrate framing belongs here. |
-| `constitutional-commitment` | Governance mechanics map directly. Four non-negotiables read like constitutional invariants. |
-| `biomev-ledger` | Per-call logging infrastructure is structurally a ledger system. Triples are ledger entries. |
-| `turing-test` | K_pros conservation is an evaluation question. Behavioral preservation framing is Turing-test-shaped. |
-
----
-
-## The Bidirectional Development Loop
-
-This project emerged from a **bidirectional AI loop**:
-
-1. **Claude thread** (`voiceai-claude-original`) — architectural argument, demo iteration, diagrams, response to rebuttals
-2. **SciSpace thread** (`voiceai-gpt-scispace`) — systematic critique, math audit, substrate-level reframing, build spec
-
-**The reviewer blocks in the Claude thread came from SciSpace.** This quality-control discipline caught math errors (58% vs 60%, latency formula, MAX off-by-1k) and forced a rigor that strengthened every subsequent artifact.
-
-**Key outputs from SciSpace that Claude didn't reach:**
-- "Commit state before intelligence branches" (thesis)
-- Bound projections architecture (K_text + K_pros + K_tmp + K_affect)
-- Substrate positioning (cascaded + S2S as degenerate cases)
-- Layer-vs-Model progression (architecture now → learned model later)
-- 8-step Minimum Viable Build Sequence
 
 ---
 
