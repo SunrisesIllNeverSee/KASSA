@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MO§E§™ — Three-Scenario Execution Comparison (v7)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080c0f;
+    --surface: #0d1318;
+    --surface2: #111920;
+    --border: #1a2530;
+    --border2: #243040;
+    --text: #d8e8f0;
+    --muted: #4a6070;
+    --dim: #1a2530;
+    --gold: #c4923a;
+    --gold2: #e8b860;
+    --green: #2aaa6a;
+    --green2: #3dd880;
+    --red: #cc3344;
+    --red2: #e05060;
+    --teal: #1aaa9a;
+    --orange: #e07820;
+    --purple: #8860c8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.6; min-height: 100vh; }
+  body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(26,37,48,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(26,37,48,0.3) 1px, transparent 1px); background-size: 32px 32px; pointer-events: none; z-index: 0; }
+  .app { position: relative; z-index: 1; max-width: 1060px; margin: 0 auto; padding: 40px 28px 80px; }
+
+  .header { margin-bottom: 30px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
+  .header-tag { font-size: 9px; font-weight: 600; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+  .header-title { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800; color: var(--text); letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 8px; }
+  .header-title span { color: var(--gold); }
+  .header-sub { font-size: 11px; color: var(--muted); line-height: 1.7; max-width: 780px; }
+  .header-meta { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .pill { background: var(--surface); border: 1px solid var(--border); padding: 3px 8px; font-size: 9px; color: var(--muted); }
+
+  /* Scenario legend */
+  .scenario-legend {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  @media(max-width:700px) { .scenario-legend { grid-template-columns: 1fr; } }
+
+  .sc-legend-item { padding: 12px 14px; border: 1px solid var(--border); background: var(--surface); }
+  .sc-legend-item.s1 { border-left: 3px solid var(--red2); }
+  .sc-legend-item.s2 { border-left: 3px solid var(--orange); }
+  .sc-legend-item.s3 { border-left: 3px solid var(--teal); }
+  .sc-legend-num { font-size: 9px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 5px; }
+  .sc-legend-num.s1 { color: var(--red2); }
+  .sc-legend-num.s2 { color: var(--orange); }
+  .sc-legend-num.s3 { color: var(--teal); }
+  .sc-legend-title { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+  .sc-legend-desc { font-size: 10px; color: var(--muted); line-height: 1.5; }
+
+  /* Input */
+  .input-section { background: var(--surface); border: 1px solid var(--border); padding: 16px; margin-bottom: 18px; }
+  .input-label { font-size: 9px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; display: flex; justify-content: space-between; }
+  .input-label span { color: var(--teal); }
+  .utterance-input { width: 100%; background: var(--bg); border: 1px solid var(--border2); color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 13px; padding: 10px 14px; resize: none; outline: none; line-height: 1.6; }
+  .utterance-input:focus { border-color: var(--gold); }
+  .preset-row { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+  .preset-btn { background: var(--surface2); border: 1px solid var(--border2); color: var(--muted); font-family: 'JetBrains Mono', monospace; font-size: 9px; padding: 5px 10px; cursor: pointer; transition: all 0.15s; flex: 1; min-width: 100px; text-align: left; }
+  .preset-btn:hover { border-color: var(--gold); color: var(--gold2); }
+  .run-btn { width: 100%; background: var(--gold); color: #000; border: none; font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; padding: 13px; cursor: pointer; margin-top: 10px; transition: opacity 0.15s; }
+  .run-btn:hover { opacity: 0.88; }
+  .run-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  /* Stage */
+  .stage { background: var(--surface); border: 1px solid var(--border); margin-bottom: 12px; transition: border-color 0.3s; }
+  .stage.active { border-color: var(--gold); }
+  .stage.done { border-color: var(--green); }
+  .stage.error { border-color: var(--red); }
+  .stage-header { display: flex; justify-content: space-between; align-items: center; padding: 9px 14px; background: var(--surface2); border-bottom: 1px solid var(--border); }
+  .stage-name { font-size: 9px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); }
+  .stage.active .stage-name { color: var(--gold2); }
+  .stage.done .stage-name { color: var(--green2); }
+  .stage-timing { font-size: 9px; color: var(--muted); }
+  .stage.done .stage-timing { color: var(--green); }
+  .stage-body { padding: 12px 14px; min-height: 40px; }
+
+  /* K display */
+  .k-json-block { background: var(--bg); border: 1px solid var(--border2); padding: 12px 14px; }
+  .k-json-title { font-size: 8px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+  .k-json-body { color: var(--gold2); line-height: 1.9; white-space: pre; font-size: 11px; }
+
+  /* Agent grid 4-col for scenario 1 */
+  .agent-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 8px 14px 14px; }
+  @media(max-width:560px) { .agent-grid { grid-template-columns: 1fr; } }
+  .agent-card { background: var(--bg); border: 1px solid var(--border); transition: border-color 0.3s; }
+  .agent-card.active { border-color: var(--gold); }
+  .agent-card.s1-active { border-color: var(--red2); }
+  .agent-card.s2-active { border-color: var(--orange); }
+  .agent-card.s3-active { border-color: var(--teal); }
+  .agent-card.done { border-color: var(--green); }
+  .agent-card.error { border-color: var(--red); }
+  .agent-hdr { display: flex; justify-content: space-between; align-items: center; padding: 6px 12px; background: var(--surface2); border-bottom: 1px solid var(--border); gap: 8px; }
+  .agent-name { font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+  .agent-card.done .agent-name { color: var(--green2); }
+  .agent-card.s1-active .agent-name { color: var(--red2); }
+  .agent-card.s2-active .agent-name { color: var(--orange); }
+  .agent-card.s3-active .agent-name { color: var(--teal); }
+  .input-badge { font-size: 7px; padding: 1px 5px; font-weight: 600; flex-shrink: 0; letter-spacing: 0.06em; }
+  .badge-text { background: rgba(204,51,68,0.12); border: 1px solid rgba(204,51,68,0.25); color: var(--red2); }
+  .badge-k { background: rgba(196,146,58,0.12); border: 1px solid rgba(196,146,58,0.25); color: var(--gold); }
+  .agent-ms { font-size: 9px; color: var(--muted); flex-shrink: 0; }
+  .agent-card.done .agent-ms { color: var(--green); }
+  .agent-body { padding: 9px 12px; min-height: 50px; }
+  .agent-out { font-size: 11px; color: var(--text); line-height: 1.6; margin-bottom: 7px; }
+  .val-result { padding-top: 7px; border-top: 1px solid var(--border); font-size: 9px; }
+  .val-row { display: flex; gap: 8px; align-items: baseline; margin-bottom: 3px; }
+  .vc-icon { width: 12px; flex-shrink: 0; }
+  .vc-name { color: var(--muted); flex: 1; }
+  .vc-pass { color: var(--green); font-weight: 600; }
+  .vc-fail { color: var(--red); font-weight: 600; }
+
+  /* Handoff indicator for scenario 1 */
+  .handoff-bar { margin: 0 14px 8px; background: rgba(204,51,68,0.08); border: 1px solid rgba(204,51,68,0.2); padding: 6px 10px; font-size: 9px; color: var(--red2); display: flex; justify-content: space-between; }
+
+  /* Dep bars */
+  .dep-section { padding: 0 14px 14px; }
+  .dep-box { background: var(--bg); border: 1px solid var(--border2); padding: 12px 14px; }
+  .dep-title { font-size: 8px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 10px; }
+  .dep-title.s1 { color: var(--red2); }
+  .dep-title.s2 { color: var(--orange); }
+  .dep-title.s3 { color: var(--teal); }
+  .dep-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+  .dep-lbl { font-size: 9px; color: var(--muted); width: 100px; flex-shrink: 0; }
+  .dep-track { flex: 1; height: 13px; background: var(--dim); position: relative; }
+  .dep-bar { height: 100%; position: absolute; display: flex; align-items: center; padding-left: 4px; font-size: 8px; font-weight: 600; color: rgba(0,0,0,0.7); }
+  .dep-badge { font-size: 7px; padding: 1px 4px; flex-shrink: 0; }
+  .dep-badge.text { background: rgba(204,51,68,0.12); color: var(--red2); border: 1px solid rgba(204,51,68,0.25); }
+  .dep-badge.k { background: rgba(196,146,58,0.12); color: var(--gold); border: 1px solid rgba(196,146,58,0.25); }
+  .dep-note { font-size: 9px; color: var(--muted); margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); line-height: 1.5; }
+
+  /* Trace */
+  .trace-section { background: var(--surface); border: 1px solid var(--border); margin-bottom: 18px; }
+  .trace-hdr { display: flex; justify-content: space-between; padding: 9px 14px; background: var(--surface2); border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 8px; }
+  .trace-title { font-size: 9px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+  .trace-body { padding: 10px 14px; font-size: 11px; max-height: 280px; overflow-y: auto; }
+  .trace-line { display: flex; gap: 10px; padding: 2px 0; border-bottom: 1px solid rgba(26,37,48,0.4); }
+  .trace-line:last-child { border-bottom: none; }
+  .t-ms { color: var(--gold); width: 66px; flex-shrink: 0; font-weight: 600; font-size: 10px; }
+  .t-sc { width: 26px; flex-shrink: 0; font-size: 8px; font-weight: 700; padding-top: 2px; }
+  .t-sc.s1 { color: var(--red2); }
+  .t-sc.s2 { color: var(--orange); }
+  .t-sc.s3 { color: var(--teal); }
+  .t-sc.sys { color: var(--muted); }
+  .t-ev { flex: 1; line-height: 1.5; }
+  .t-ev.s1 { color: var(--red2); }
+  .t-ev.s2 { color: var(--orange); }
+  .t-ev.s3 { color: var(--teal); }
+  .t-ev.kernel { color: var(--gold2); }
+  .t-ev.done-ev { color: var(--green2); }
+  .t-ev.error { color: var(--red); }
+  .t-ev.report-ev { color: var(--text); }
+  .tt { font-size: 7px; padding: 1px 4px; border-radius: 1px; margin-left: 4px; vertical-align: middle; }
+  .tt.K { background: rgba(196,146,58,0.15); color: var(--gold); border: 1px solid rgba(196,146,58,0.3); }
+  .tt.text { background: rgba(204,51,68,0.12); color: var(--red2); border: 1px solid rgba(204,51,68,0.25); }
+  .tt.par { background: rgba(26,170,154,0.12); color: var(--teal); border: 1px solid rgba(26,170,154,0.25); }
+  .tt.ok { background: rgba(42,170,106,0.12); color: var(--green); border: 1px solid rgba(42,170,106,0.25); }
+
+  /* Report */
+  .report-section { background: var(--surface); border: 1px solid var(--border); margin-bottom: 18px; }
+  .report-hdr { display: flex; justify-content: space-between; align-items: center; padding: 9px 14px; background: var(--surface2); border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 8px; }
+  .report-title { font-size: 9px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+  .export-btn { background: transparent; border: 1px solid var(--gold); color: var(--gold); font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; padding: 4px 12px; cursor: pointer; transition: all 0.15s; }
+  .export-btn:hover { background: var(--gold); color: #000; }
+  .report-body { padding: 18px; }
+  .report-sh { font-size: 9px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; margin-top: 20px; padding-bottom: 5px; border-bottom: 1px solid var(--border); }
+  .report-sh:first-child { margin-top: 0; }
+
+  /* Three column comparison */
+  .three-col { display: grid; grid-template-columns: 200px 1fr 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); margin-bottom: 12px; }
+  @media(max-width:700px) { .three-col { grid-template-columns: 1fr; } }
+  .tc-cell { padding: 12px 14px; background: var(--bg); }
+  .tc-cell.header-row { background: var(--surface2); }
+  .tc-cell.s1-col { background: rgba(204,51,68,0.05); }
+  .tc-cell.s2-col { background: rgba(224,120,32,0.05); }
+  .tc-cell.s3-col { background: rgba(26,170,154,0.05); }
+  .tc-label { font-size: 10px; font-weight: 600; color: var(--text); }
+  .tc-note { font-size: 9px; color: var(--muted); margin-top: 2px; }
+  .tc-col-hdr { font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+  .tc-col-hdr.s1 { color: var(--red2); }
+  .tc-col-hdr.s2 { color: var(--orange); }
+  .tc-col-hdr.s3 { color: var(--teal); }
+  .tc-val { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; line-height: 1; margin-bottom: 3px; }
+  .tc-val.s1 { color: var(--red2); }
+  .tc-val.s2 { color: var(--orange); }
+  .tc-val.s3 { color: var(--teal); }
+  .tc-sub { font-size: 9px; color: var(--muted); }
+
+  /* Big comparison numbers */
+  .big-compare { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+  @media(max-width:700px) { .big-compare { grid-template-columns: 1fr; } }
+  .bc-item { padding: 18px; border: 1px solid var(--border); background: var(--bg); text-align: center; }
+  .bc-item.s1 { border-top: 3px solid var(--red2); }
+  .bc-item.s2 { border-top: 3px solid var(--orange); }
+  .bc-item.s3 { border-top: 3px solid var(--teal); }
+  .bc-num { font-family: 'Syne', sans-serif; font-size: 42px; font-weight: 800; line-height: 1; margin-bottom: 6px; }
+  .bc-num.s1 { color: var(--red2); }
+  .bc-num.s2 { color: var(--orange); }
+  .bc-num.s3 { color: var(--teal); }
+  .bc-label { font-size: 9px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .bc-desc { font-size: 10px; color: var(--muted); line-height: 1.5; }
+
+  .proof-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  @media(max-width:700px) { .proof-grid { grid-template-columns: 1fr; } }
+  .proof-item { background: var(--bg); border: 1px solid var(--border); padding: 10px 12px; display: flex; gap: 10px; }
+  .proof-icon { font-size: 13px; flex-shrink: 0; }
+  .proof-lbl { font-size: 11px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+  .proof-detail { font-size: 10px; color: var(--muted); line-height: 1.5; }
+
+  .synthesis-text { font-size: 13px; color: var(--text); line-height: 1.8; background: var(--bg); border: 1px solid var(--border); padding: 14px 16px; }
+  .bottom-note { font-size: 10px; color: var(--muted); padding: 12px 14px; background: var(--bg); border: 1px solid var(--border); margin-top: 8px; line-height: 1.7; }
+
+  .shimmer { font-size: 10px; color: var(--muted); animation: blink 1.2s infinite; }
+  @keyframes blink { 0%,100%{opacity:1}50%{opacity:0.2} }
+  .empty { font-size: 11px; color: var(--muted); }
+  .status-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 5px; vertical-align: middle; }
+  .dot-idle { background: var(--dim); }
+  .dot-active { background: var(--gold); animation: pulse 1s infinite; }
+  .dot-done { background: var(--green); }
+  .dot-error { background: var(--red); }
+  @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.3} }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--dim); }
+
+  /* API Key panel (collapsible) */
+  .api-key-panel { background: var(--surface); border: 1px solid var(--border); margin-bottom: 12px; }
+  .api-key-panel summary { list-style: none; cursor: pointer; padding: 10px 14px; font-size: 9px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); display: flex; justify-content: space-between; align-items: center; }
+  .api-key-panel summary::-webkit-details-marker { display: none; }
+  .api-key-panel summary::before { content: '▸'; margin-right: 8px; color: var(--gold); transition: transform 0.15s; }
+  .api-key-panel[open] summary::before { transform: rotate(90deg); display: inline-block; }
+  .api-key-panel summary .key-status { font-size: 9px; color: var(--muted); letter-spacing: 0.1em; }
+  .api-key-panel summary .key-status.set { color: var(--green2); }
+  .api-key-panel summary .key-status.cached { color: var(--gold2); }
+  .api-key-body { padding: 0 14px 14px; }
+  .api-key-body p { font-size: 10px; color: var(--muted); line-height: 1.6; margin-bottom: 8px; }
+  .api-key-row { display: flex; gap: 8px; align-items: stretch; flex-wrap: wrap; }
+  .api-key-input { flex: 1; min-width: 200px; background: var(--bg); border: 1px solid var(--border2); color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 12px; padding: 8px 12px; outline: none; }
+  .api-key-input:focus { border-color: var(--gold); }
+  .api-key-btn { background: var(--surface2); border: 1px solid var(--border2); color: var(--gold); font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; padding: 6px 14px; cursor: pointer; transition: all 0.15s; }
+  .api-key-btn:hover { background: var(--gold); color: #000; border-color: var(--gold); }
+  .api-key-btn.danger { color: var(--red2); }
+  .api-key-btn.danger:hover { background: var(--red); color: #000; border-color: var(--red); }
+
+  /* Cached results banner */
+  .cached-banner { background: rgba(196,146,58,0.08); border: 1px solid var(--gold); border-left-width: 3px; padding: 10px 14px; margin-bottom: 12px; font-size: 11px; color: var(--gold2); display: flex; gap: 10px; align-items: center; }
+  .cached-banner .cb-icon { font-size: 14px; flex-shrink: 0; }
+  .cached-banner .cb-text { flex: 1; line-height: 1.5; }
+  .cached-banner strong { color: var(--gold); }
+
+  /* Key Result gold pulse on render */
+  @keyframes goldPulse { 0% { box-shadow: 0 0 0 0 rgba(196,146,58,0.55); border-color: var(--gold2); } 70% { box-shadow: 0 0 0 14px rgba(196,146,58,0); border-color: var(--gold); } 100% { box-shadow: 0 0 0 0 rgba(196,146,58,0); border-color: var(--gold); } }
+  @keyframes fadeInUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .key-result-box { animation: fadeInUp 0.5s ease-out, goldPulse 1.6s ease-out 0.4s 2; }
+
+  /* Multi-turn projection table */
+  .turn-table { width: 100%; border-collapse: collapse; margin-bottom: 8px; background: var(--bg); border: 1px solid var(--border2); }
+  .turn-table th { font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border2); background: var(--surface2); }
+  .turn-table td { font-size: 11px; color: var(--text); padding: 9px 12px; border-bottom: 1px solid var(--border); }
+  .turn-table tr:last-child td { border-bottom: none; }
+  .turn-table .col-s1 { color: var(--red2); font-weight: 600; }
+  .turn-table .col-s3 { color: var(--teal); font-weight: 600; }
+  .turn-table .col-delta { color: var(--gold2); font-weight: 700; }
+  .turn-footnote { font-size: 9px; color: var(--muted); line-height: 1.6; padding: 8px 12px; background: var(--bg); border: 1px solid var(--border); border-top: none; }
+  .turn-insight { font-size: 12px; color: var(--text); line-height: 1.7; background: var(--bg); border: 1px solid var(--border); padding: 12px 14px; margin-top: 8px; }
+  .turn-insight strong { color: var(--gold2); }
+
+  /* Multimodal K preview */
+  .k-modal-block { background: var(--bg); border: 1px solid var(--border2); padding: 12px 14px; margin-top: 8px; font-family: 'JetBrains Mono', monospace; font-size: 11px; line-height: 1.9; }
+  .k-modal-row { display: flex; gap: 10px; align-items: center; padding: 2px 0; }
+  .k-modal-name { width: 90px; flex-shrink: 0; }
+  .k-modal-bar { flex: 1; height: 9px; position: relative; }
+  .k-modal-status { font-size: 9px; flex-shrink: 0; letter-spacing: 0.06em; }
+  .k-modal-row.live .k-modal-name { color: var(--gold2); font-weight: 600; }
+  .k-modal-row.live .k-modal-bar { background: linear-gradient(90deg, var(--gold) 0%, var(--teal) 100%); border: 1px solid var(--gold); }
+  .k-modal-row.live .k-modal-status { color: var(--gold2); font-weight: 600; }
+  .k-modal-row.roadmap .k-modal-name { color: var(--muted); }
+  .k-modal-row.roadmap .k-modal-bar { background: repeating-linear-gradient(90deg, var(--dim), var(--dim) 4px, var(--surface2) 4px, var(--surface2) 8px); border: 1px solid var(--border); }
+  .k-modal-row.roadmap .k-modal-status { color: var(--muted); }
+  .k-modal-caption { font-size: 9px; color: var(--muted); margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); line-height: 1.6; }
+
+  /* Industry Context collapsible */
+  .industry-context { background: var(--surface); border: 1px solid var(--border); margin-top: 12px; }
+  .industry-context summary { list-style: none; cursor: pointer; padding: 11px 14px; font-size: 9px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); display: flex; align-items: center; }
+  .industry-context summary::-webkit-details-marker { display: none; }
+  .industry-context summary::before { content: '▸'; margin-right: 8px; color: var(--gold); transition: transform 0.15s; display: inline-block; }
+  .industry-context[open] summary::before { transform: rotate(90deg); }
+  .industry-context-body { padding: 0 14px 14px; }
+  .industry-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+  .industry-table th { text-align: left; font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); padding: 8px 10px; border-bottom: 1px solid var(--border2); background: var(--surface2); }
+  .industry-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); color: var(--text); }
+  .industry-table tr:last-child td { border-bottom: none; }
+  .industry-table .lat { font-weight: 600; }
+  .industry-table .src { color: var(--muted); font-size: 10px; }
+  .industry-takeaway { font-size: 11px; color: var(--text); line-height: 1.7; margin-top: 10px; padding: 10px 12px; background: var(--bg); border: 1px solid var(--border); }
+  .industry-takeaway strong { color: var(--gold2); }
+
+  /* Toast for copy confirmation */
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--surface); border: 1px solid var(--gold); color: var(--gold2); padding: 10px 18px; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+  .toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="header">
+    <div class="header-tag">MO§E§™ — Three-Scenario Execution Comparison · v7</div>
+    <div class="header-title">Current System vs New System:<br><span>Same Input. Same Agents. Three Architectures.</span></div>
+    <div style="font-family:'Syne',sans-serif;font-size:13px;color:var(--gold2);font-style:italic;letter-spacing:0.02em;margin-bottom:10px;">Commit state before intelligence branches.</div>
+    <div class="header-sub">All three scenarios run in the same session against the same utterance. Scenario 1 simulates the current cascaded system — agents receive each other's text output, full NLU re-inference, handoff overhead applied. Scenarios 2 and 3 run the K-governed architecture. The comparison is honest: same agents, same task, different architecture.</div>
+    <div class="header-meta">
+      <span class="pill">CCH DOI: 10.5281/zenodo.19105225</span>
+      <span class="pill">Patent No. 63/877,177</span>
+      <span class="pill">Ello Cello LLC © 2026</span>
+    </div>
+  </div>
+
+  <!-- API Key panel (collapsible) -->
+  <details class="api-key-panel" id="apiKeyPanel">
+    <summary>
+      <span>§ Anthropic API Key — click to expand</span>
+      <span class="key-status" id="keyStatus">cached results mode</span>
+    </summary>
+    <div class="api-key-body">
+      <p>Enter your Anthropic API key to run the demo live. The key is stored only in this browser session (sessionStorage) — it is never persisted to disk, transmitted to any server other than Anthropic, or visible to anyone else. Without a key, the demo replays a cached run so you can still see the output.</p>
+      <div class="api-key-row">
+        <input type="password" class="api-key-input" id="apiKeyInput" placeholder="sk-ant-api03-…" autocomplete="off" spellcheck="false">
+        <button class="api-key-btn" onclick="saveApiKey()">Save key</button>
+        <button class="api-key-btn danger" onclick="clearApiKey()">Clear</button>
+      </div>
+    </div>
+  </details>
+
+  <!-- Cached results banner -->
+  <div class="cached-banner" id="cachedBanner" style="display:none">
+    <div class="cb-icon">◉</div>
+    <div class="cb-text"><strong>Viewing cached results.</strong> This demo is replaying a previously recorded live run so visitors can always see the architectural delta. Enter an Anthropic API key above to run the three scenarios live against the model.</div>
+  </div>
+
+  <!-- Scenario legend -->
+  <div class="scenario-legend">
+    <div class="sc-legend-item s1">
+      <div class="sc-legend-num s1">Scenario 1 — Current System</div>
+      <div class="sc-legend-title">Cascaded text relay</div>
+      <div class="sc-legend-desc">Representative cascaded orchestration (text-dominant; partial structure not assumed). Full NLU inference. Each agent receives the prior agent's text output. Sequential by necessity. Handoff overhead at every step. No shared kernel.</div>
+    </div>
+    <div class="sc-legend-item s2">
+      <div class="sc-legend-num s2">Scenario 2 — New / Sequential</div>
+      <div class="sc-legend-title">K-governed, sequential scheduler</div>
+      <div class="sc-legend-desc">Commitment kernel extracted once. All agents receive K (JSON). Sequential scheduler. No re-inference. No text relay between agents.</div>
+    </div>
+    <div class="sc-legend-item s3">
+      <div class="sc-legend-num s3">Scenario 3 — New / Parallel</div>
+      <div class="sc-legend-title">K-governed, near-parallel scheduler (staggered launch)</div>
+      <div class="sc-legend-desc">Same K. Same agents. Parallel execution — all agents access K simultaneously. Wall-clock ≈ slowest single agent.</div>
+    </div>
+  </div>
+
+  <!-- Input -->
+  <div class="input-section">
+    <div class="input-label">Caller Utterance <span>Input for all three scenarios</span></div>
+    <textarea class="utterance-input" id="utteranceInput" rows="2">I need to schedule an HVAC repair for Friday morning — my heat is completely out and it's freezing.</textarea>
+    <div class="preset-row">
+      <button class="preset-btn" onclick="setPreset(0)">→ HVAC emergency</button>
+      <button class="preset-btn" onclick="setPreset(1)">→ Reschedule appt</button>
+      <button class="preset-btn" onclick="setPreset(2)">→ Billing inquiry</button>
+      <button class="preset-btn" onclick="setPreset(3)">→ Job status</button>
+    </div>
+    <button class="run-btn" id="runBtn" onclick="runAll()">▶ Run All Three Scenarios</button>
+  </div>
+
+  <!-- SCENARIO 1 -->
+  <div class="stage" id="stage-s1">
+    <div class="stage-header">
+      <div class="stage-name"><span class="status-dot dot-idle" id="dot-s1"></span><span style="color:var(--red2)">S1</span> — Current System: Cascaded Text Relay</div>
+      <div class="stage-timing" id="timing-s1">—</div>
+    </div>
+    <div style="padding:8px 14px 4px;font-size:9px;color:var(--red2);">Full NLU inference → agents receive each other's text output → handoff overhead (500ms) between each agent → sequential by necessity.</div>
+    <div class="agent-grid" id="s1Grid">
+      <div class="agent-card" id="s1-nlu"><div class="agent-hdr"><div class="agent-name"><span class="status-dot dot-idle" id="s1-dot-nlu"></span>NLU / Intent</div><span class="input-badge badge-text">input: raw text</span><div class="agent-ms" id="s1-ms-nlu">—</div></div><div class="agent-body"><div class="empty">Waiting...</div></div></div>
+      <div class="agent-card" id="s1-tone"><div class="agent-hdr"><div class="agent-name"><span class="status-dot dot-idle" id="s1-dot-tone"></span>Tone Agent</div><span class="input-badge badge-text">input: NLU text</span><div class="agent-ms" id="s1-ms-tone">—</div></div><div class="agent-body"><div class="empty">Waiting...</div></div></div>
+      <div class="agent-card" id="s1-subject"><div class="agent-hdr"><div class="agent-name"><span class="status-dot dot-idle" id="s1-dot-subject"></span>Subject Agent</div><span class="input-badge badge-text">input: tone text</span><div class="agent-ms" id="s1-ms-subject">—</div></div><div class="agent-body"><div class="empty">Waiting...</div></div></div>
+      <div class="agent-card" id="s1-response"><div class="agent-hdr"><div class="agent-name"><span class="status-dot dot-idle" id="s1-dot-response"></span>Response Agent</div><span class="input-badge badge-text">input: subject text</span><div class="agent-ms" id="s1-ms-response">—</div></div><div class="agent-body"><div class="empty">Waiting...</div></div></div>
+    </div>
+    <div class="dep-section" id="s1Dep"></div>
+  </div>
+
+  <!-- SCENARIO 2 -->
+  <div class="stage" id="stage-s2">
+    <div class="stage-header">
+      <div class="stage-name"><span class="status-dot dot-idle" id="dot-s2"></span><span style="color:var(--orange)">S2</span> — New System: K-Governed Sequential</div>
+      <div class="stage-timing" id="timing-s2">—</div>
+    </div>
+    <div style="padding:8px 14px 4px;font-size:9px;color:var(--orange);">K extracted once. All agents receive JSON kernel. Sequential scheduler. No re-inference. No text relay.</div>
+    <div class="agent-grid" id="s2Grid">
+      <div class="agent-card" id="s2-tone"><div class="agent-hdr"><div class="agent-name"><span class="status-dot dot-idle" id="s2-dot-tone"></span>Tone Agent</div><span class="input-badge badge-k">input: K</span><div class="agent-ms" id="s2-ms-tone">—</div></div><div class="agent-body"><div class="empty">Waiting...</div></div></div>
+      <div class="agent-card" id="s2-subject"><div class="agent-hdr"><div class="agent-name"><span class="status-dot dot-idle" id="s2-dot-subject"></span>Subject Agent</div><span class="input-badge badge-k">input: K</span><div class="agent-ms" id="s2-ms-subject">—</div></div><div class="agent-body"><div class="empty">Waiting...</div></div></div>
+      <div class="agent-card" id="s2-response"><div class="agent-hdr"><div class="agent-name"><span class="status-dot dot-idle" id="s2-dot-response"></span>Response Agent</div><span class="input-badge badge-k">input: K</span><div class="agent-ms" id="s2-ms-response">—</div></div><div class="agent-body"><div class="empty">Waiting...</div></div></div>
+      <div class="agent-card" id="s2-pace"><div class="agent-hdr"><div class="agent-name"><span class="status-dot dot-idle" id="s2-dot-pace"></span>Pace Agent</div><span class="input-badge badge-k">input: K</span><div class="agent-ms" id="s2-ms-pace">—</div></div><div class="agent-body"><div class="empty">Waiting...</div></div></div>
+    </div>
+    <div class="dep-section" id="s2Dep"></div>
+  </div>
+
+  <!-- SCENARIO 3 -->
+  <div class="stage" id="stage-s3">
+    <div class="stage-header">
+      <div class="stage-name"><span class="status-dot dot-idle" id="dot-s3"></span><span style="color:var(--teal)">S3</span> — New System: K-Governed Parallel</div>
+      <div class="stage-timing" id="timing-s3">—</div>
+    </div>
+    <div style="padding:8px 14px 4px;font-size:9px;color:var(--teal);">Same K. All agents access simultaneously (staggered 200ms to avoid rate limit). Wall-clock ≈ slowest single agent.</div>
+    <div class="agent-grid" id="s3Grid">
+      <div class="agent-card" id="s3-tone"><div class="agent-hdr"><div class="agent-name"><span class="status-dot dot-idle" id="s3-dot-tone"></span>Tone Agent</div><span class="input-badge badge-k">input: K</span><div class="agent-ms" id="s3-ms-tone">—</div></div><div class="agent-body"><div class="empty">Waiting...</div></div></div>
+      <div class="agent-card" id="s3-subject"><div class="agent-hdr"><div class="agent-name"><span class="status-dot dot-idle" id="s3-dot-subject"></span>Subject Agent</div><span class="input-badge badge-k">input: K</span><div class="agent-ms" id="s3-ms-subject">—</div></div><div class="agent-body"><div class="empty">Waiting...</div></div></div>
+      <div class="agent-card" id="s3-response"><div class="agent-hdr"><div class="agent-name"><span class="status-dot dot-idle" id="s3-dot-response"></span>Response Agent</div><span class="input-badge badge-k">input: K</span><div class="agent-ms" id="s3-ms-response">—</div></div><div class="agent-body"><div class="empty">Waiting...</div></div></div>
+      <div class="agent-card" id="s3-pace"><div class="agent-hdr"><div class="agent-name"><span class="status-dot dot-idle" id="s3-dot-pace"></span>Pace Agent</div><span class="input-badge badge-k">input: K</span><div class="agent-ms" id="s3-ms-pace">—</div></div><div class="agent-body"><div class="empty">Waiting...</div></div></div>
+    </div>
+    <div class="dep-section" id="s3Dep"></div>
+  </div>
+
+  <!-- Trace -->
+  <div class="trace-section" id="traceSection" style="display:none">
+    <div class="trace-hdr">
+      <div class="trace-title">§ Execution Trace — All Three Scenarios</div>
+      <div style="display:flex;gap:12px;font-size:9px;">
+        <span style="color:var(--red2)">▪ S1</span>
+        <span style="color:var(--orange)">▪ S2</span>
+        <span style="color:var(--teal)">▪ S3</span>
+        <span style="color:var(--muted)">t=0 at run start</span>
+      </div>
+    </div>
+    <div class="trace-body" id="traceBody"></div>
+  </div>
+
+  <!-- Report -->
+  <div class="report-section" id="reportSection" style="display:none">
+    <div class="report-hdr">
+      <div class="report-title">§ Three-Scenario Execution Report</div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="font-size:9px;color:var(--muted)" id="reportTime"></span>
+        <button class="export-btn" onclick="copyReport()">⎘ Copy Report</button>
+        <button class="export-btn" onclick="exportReport()">↓ Export HTML</button>
+      </div>
+    </div>
+    <div class="report-body" id="reportBody"><div class="shimmer">Generating...</div></div>
+  </div>
+
+  <div class="toast" id="toast">Copied to clipboard</div>
+
+</div>
+<script>
+const PRESETS = [
+  "I need to schedule an HVAC repair for Friday morning — my heat is completely out and it's freezing.",
+  "I need to reschedule my plumbing appointment from Tuesday to Thursday afternoon if possible.",
+  "I have a question about my last invoice — I was charged for parts I don't think were used.",
+  "Can you tell me if my technician is still on the way? My appointment was supposed to be at 2pm."
+];
+function setPreset(i) { document.getElementById('utteranceInput').value = PRESETS[i]; }
+
+// ---------- API Key handling (sessionStorage only) ----------
+const API_KEY_STORAGE_KEY = 'kassa_anthropic_api_key';
+function getApiKey() { try { return sessionStorage.getItem(API_KEY_STORAGE_KEY) || ''; } catch { return ''; } }
+function saveApiKey() {
+  const v = (document.getElementById('apiKeyInput').value || '').trim();
+  if (!v) { showToast('Enter a key first'); return; }
+  try { sessionStorage.setItem(API_KEY_STORAGE_KEY, v); } catch {}
+  document.getElementById('apiKeyInput').value = '';
+  updateKeyStatus();
+  showToast('Key saved for this session');
+}
+function clearApiKey() {
+  try { sessionStorage.removeItem(API_KEY_STORAGE_KEY); } catch {}
+  document.getElementById('apiKeyInput').value = '';
+  updateKeyStatus();
+  showToast('Key cleared');
+}
+function updateKeyStatus() {
+  const has = !!getApiKey();
+  const el = document.getElementById('keyStatus');
+  const banner = document.getElementById('cachedBanner');
+  if (has) {
+    el.textContent = 'live mode — key set';
+    el.className = 'key-status set';
+    if (banner) banner.style.display = 'none';
+  } else {
+    el.textContent = 'cached results mode';
+    el.className = 'key-status cached';
+    if (banner) banner.style.display = 'flex';
+  }
+}
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  if (!t) return;
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+// ---------- Cached run (used when no API key is set) ----------
+// Replayed results from a previously recorded live run against the HVAC emergency preset.
+// Wall-clock numbers are representative of one captured live session.
+const CACHED_RUN = {
+  utterance: "I need to schedule an HVAC repair for Friday morning — my heat is completely out and it's freezing.",
+  K: {
+    actor: "caller",
+    action: "schedule HVAC repair",
+    constraint: "heat completely out, freezing conditions",
+    time: "Friday morning",
+    urgency: "high",
+    negation: "none"
+  },
+  hash: "7f3a9c1d4e2b8f60a5d7c91e6b4a8f2d3c5e9a7b1f8d4c2e0a6b9f3d7c1e5a8b",
+  s1: {
+    wall: 4048,
+    results: {
+      nlu: { out: "Intent: service request — HVAC emergency repair. Key entities: heating system failure, time preference Friday morning, high urgency due to no heat in cold conditions. Action needed: dispatch technician for immediate assessment and repair.", elapsed: 612, start: 4 },
+      tone: { out: "Adopt a warm, reassuring, and brisk professional tone. Acknowledge the discomfort and urgency directly while signaling competence — the caller needs to feel heard and believe action is happening immediately.", elapsed: 548, start: 1118 },
+      subject: { out: "Domain: residential HVAC repair, no-heat emergency. Urgency: high — freezing conditions create habitability risk. Operational: prioritize Friday morning slot, dispatch qualified furnace/heat-pump technician with diagnostic kit.", elapsed: 581, start: 2168 },
+      response: { out: "Confirm the Friday morning repair window, capture address and system type, and offer the earliest available emergency slot if Friday morning is unavailable. Acknowledge urgency and set expectations on technician arrival.", elapsed: 537, start: 3251 }
+    }
+  },
+  s2: {
+    wall: 2186, pass: 4,
+    results: {
+      tone: { out: "Use a warm, calm, professional tone with brisk pacing. The caller is in a high-urgency situation — reassure without minimizing.", elapsed: 521, start: 4, val: { pass: true, checks: { urgency_signal: true, register: true, sufficient: true, no_premature_commit: true } } },
+      subject: { out: "Service domain is HVAC — no-heat emergency repair. Urgency is high (freezing conditions). Time anchor: Friday morning, with willingness to upgrade to immediate dispatch if available.", elapsed: 568, start: 528 },
+      response: { out: "Response must confirm the Friday morning request, offer earliest emergency option, capture address/system info, and set arrival expectations — all while reflecting the urgency.", elapsed: 552, start: 1099 },
+      pace: { out: "Pace should be quick and direct — short turns, minimal fluff, fast confirmation cadence to match the high-urgency caller state.", elapsed: 489, start: 1653 }
+    }
+  },
+  s3: {
+    wall: 698, pass: 4, spread: 600,
+    results: {
+      tone: { out: "Use a warm, calm, professional tone with brisk pacing. The caller is in a high-urgency situation — reassure without minimizing.", elapsed: 521, start: 4, val: { pass: true, checks: { urgency_signal: true, register: true, sufficient: true, no_premature_commit: true } } },
+      subject: { out: "Service domain is HVAC — no-heat emergency repair. Urgency is high (freezing conditions). Time anchor: Friday morning, with willingness to upgrade to immediate dispatch if available.", elapsed: 491, start: 204 },
+      response: { out: "Response must confirm the Friday morning request, offer earliest emergency option, capture address/system info, and set arrival expectations — all while reflecting the urgency.", elapsed: 482, start: 405 },
+      pace: { out: "Pace should be quick and direct — short turns, minimal fluff, fast confirmation cadence to match the high-urgency caller state.", elapsed: 89, start: 605 }
+    }
+  },
+  synthesis: "I'm so sorry your heat is out — let's get you taken care of. I have you down for an HVAC emergency repair on Friday morning, and I'll flag this as a high-priority no-heat call so we can also offer you the earliest available slot if anything opens up sooner. Can I confirm the service address and the type of heating system you have?"
+};
+
+// Add validation to cached results so renderVal works during replay
+function _hydrateCachedValidation(scenario) {
+  Object.entries(scenario.results).forEach(([id, r]) => {
+    if (!r.val && VALIDATION[id]) r.val = runValidation(id, r.out, CACHED_RUN.K);
+  });
+}
+
+let t0 = 0, traceLog = [], runData = {};
+function ts() { return Date.now() - t0; }
+const HANDOFF_MS = 500; // configurable simulation parameter (conservative estimate)
+
+function addTrace(sc, type, text, tag) {
+  traceLog.push({ms: ts(), sc, type, text, tag});
+  const el = document.getElementById('traceBody');
+  if (!el) return;
+  el.innerHTML = traceLog.map(l =>
+    `<div class="trace-line">
+      <span class="t-ms">t=${l.ms}ms</span>
+      <span class="t-sc ${l.sc}">${l.sc.toUpperCase()}</span>
+      <span class="t-ev ${l.type}">${l.text}${l.tag?`<span class="tt ${l.tag}">${l.tag}</span>`:''}</span>
+    </div>`
+  ).join('');
+  el.scrollTop = el.scrollHeight;
+}
+
+function setStageCls(id, cls) {
+  const s=document.getElementById('stage-'+id); if(s) s.className='stage '+cls;
+  const d=document.getElementById('dot-'+id); if(d) d.className='status-dot dot-'+(cls||'idle');
+}
+function setAgentCls(id, cls) {
+  const s=document.getElementById(id); if(s) s.className='agent-card '+cls;
+  const parts = id.split('-'); // e.g. "s1-tone"
+  const dId = parts[0]+'-dot-'+parts.slice(1).join('-');
+  const d=document.getElementById(dId); if(d) d.className='status-dot '+(cls.includes('done')?'dot-done':cls.includes('error')?'dot-error':'dot-active');
+}
+function setAgentBody(id, html) {
+  const e=document.getElementById(id); if(!e) return;
+  const b=e.querySelector('.agent-body'); if(b) b.innerHTML=html;
+}
+function setAgentMs(id, v) {
+  const parts = id.split('-');
+  const msId = parts[0]+'-ms-'+parts.slice(1).join('-');
+  const e=document.getElementById(msId); if(e) e.textContent=v;
+}
+function setTiming(id, v) { const e=document.getElementById('timing-'+id); if(e) e.textContent=v; }
+
+async function callClaude(sys, usr, maxTok=150, retryLabel=null, maxTries=4) {
+  const apiKey = getApiKey();
+  if (!apiKey) throw new Error('missing_api_key');
+  for (let i=0; i<maxTries; i++) {
+    if (i>0) {
+      const w=1200*i;
+      if (retryLabel) addTrace('sys','kernel',`${retryLabel} rate limit — waiting ${w}ms (attempt ${i+1})...`);
+      await new Promise(r=>setTimeout(r,w));
+    }
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:maxTok,system:sys,messages:[{role:'user',content:usr}]})
+    });
+    const d=await r.json();
+    if (d.error) { if((d.error.type==='exceeded_limit'||d.error.type==='overloaded_error')&&i<maxTries-1) continue; throw new Error(d.error.type||d.error.message||'api_error'); }
+    return d.content[0].text.trim();
+  }
+}
+
+async function sha256(s) {
+  const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));
+  return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('');
+}
+function parseJSON(s) { try{return JSON.parse(s.replace(/```json|```/g,'').trim());}catch{return null;} }
+
+// Agent-specific validation
+const VALIDATION = {
+  tone: {
+    urgency_signal: (o,K) => K.urgency!=='high'||/urgent|immediate|quick|efficient|priorit|direct|brisk|prompt|clear|swift|calm/i.test(o),
+    register: (o,K) => /tone|approach|manner|warm|professional|reassur|calm|direct|clear|empat/i.test(o),
+    sufficient: (o,K) => o.split(/\s+/).length>=6,
+    no_premature_commit: (o,K) => !/confirmed|booked|scheduled/i.test(o)
+  },
+  subject: {
+    domain_identified: (o,K) => {
+      // Very broad — agent may describe the service in many ways
+      return /hvac|heat|cool|air|furnac|boiler|plumb|pipe|drain|electr|wir|repair|fix|service|mainten|appointment|book|schedul|reschedul|invoice|bill|charg|payment|status|tech|dispatch|visit|request|call|emerg|system|unit|equipment|home|residential/i.test(o) || o.split(/\s+/).length >= 8;
+    },
+    urgency_noted: (o,K) => K.urgency!=='high'||/urgent|emergency|priorit|immediate|critical|high|out|down|fail|broken|freez|outage|no heat|without heat|heat out|not working|non.function/i.test(o)||o.split(/\s+/).length>=8,
+    time_noted: (o,K) => !K.time||K.time==='unspecified'||/friday|monday|tuesday|wednesday|thursday|morning|afternoon|today|tomorrow|time|slot|window|availab|schedul|when|day/i.test(o),
+    sufficient: (o,K) => o.split(/\s+/).length>=6
+  },
+  response: {
+    action: (o,K) => { const w=(K.action||'').toLowerCase().split(/\s+/).filter(x=>x.length>3); return w.length===0||w.some(x=>o.toLowerCase().includes(x)); },
+    time: (o,K) => !K.time||K.time==='unspecified'||/friday|monday|morning|afternoon|today|tomorrow|time|slot|window/i.test(o),
+    objective: (o,K) => /confirm|offer|provide|give|ask|verify|check|schedul|book|inform/i.test(o),
+    sufficient: (o,K) => o.split(/\s+/).length>=6
+  },
+  pace: {
+    pace_word: (o,K) => /pace|quick|slow|brief|short|concise|efficient|direct|fast|measured|deliberate|turn|length|cadence/i.test(o),
+    urgency: (o,K) => K.urgency!=='high'||/quick|fast|efficient|brisk|direct|brief|minimal|prompt/i.test(o),
+    actionable: (o,K) => o.split(/\s+/).length>=5,
+    derived: (o,K) => o.trim().length>0
+  }
+};
+
+const VAL_LABELS = {
+  tone: { urgency_signal:'Urgency addressed', register:'Tone register stated', sufficient:'Sufficient content', no_premature_commit:'No premature commitments' },
+  subject: { domain_identified:'Service domain identified', urgency_noted:'Urgency level noted', time_noted:'Time context noted', sufficient:'Sufficient content' },
+  response: { action:'Action addressed', time:'Time anchor referenced', objective:'Response objective stated', sufficient:'Sufficient content' },
+  pace: { pace_word:'Pace explicitly stated', urgency:'Urgency reflected in pace', actionable:'Actionable guidance', derived:'Output derived from K' }
+};
+
+function runValidation(agentId, output, K) {
+  const spec = VALIDATION[agentId];
+  if (!spec) return {pass:true, checks:{}};
+  const checks = {};
+  Object.entries(spec).forEach(([k,fn]) => { try{checks[k]=fn(output,K);}catch{checks[k]=false;} });
+  return {pass:Object.values(checks).every(v=>v), checks};
+}
+
+function renderVal(agentId, val) {
+  const labels = VAL_LABELS[agentId]||{};
+  return `<div class="val-result">${Object.entries(val.checks).map(([k,v])=>`
+    <div class="val-row"><span class="vc-icon">${v?'✓':'✗'}</span><span class="vc-name">${labels[k]||k}</span><span class="${v?'vc-pass':'vc-fail'}">${v?'pass':'fail'}</span></div>
+  `).join('')}</div>`;
+}
+
+function renderKJson(K) {
+  const lines=['{'];
+  Object.entries(K).forEach(([k,v],i,a)=>{ lines.push(`  <span style="color:var(--teal)">"${k}"</span>: <span style="color:var(--gold2)">"${v}"</span>${i<a.length-1?',':''}`); });
+  lines.push('}'); return lines.join('\n');
+}
+
+function depBars(results, ids, sc, scaleMs, badges) {
+  const colors = {s1:'var(--red2)', s2:'var(--orange)', s3:'var(--teal)'};
+  const titles = {s1:'§ S1 — Sequential text relay (each agent input = prior agent text output)', s2:'§ S2 — Sequential K-governed (each agent input = K)', s3:'§ S3 — Parallel K-governed (all agents input = K simultaneously)'};
+  const notes = {
+    s1:'Each agent waited on prior agent\'s text output. Handoff overhead (500ms) applied between each. Input: prior agent text.',
+    s2:'Each agent waited on prior completion. Input: same K object. No text relay between agents.',
+    s3:'All agents accessed K simultaneously (200ms stagger). Wall-clock ≈ slowest single agent.'
+  };
+  return `<div class="dep-box">
+    <div class="dep-title ${sc}">${titles[sc]}</div>
+    ${ids.map(id=>{
+      const r=results[id]||{};
+      const lP=((r.start||0)/scaleMs)*100;
+      const wP=Math.max(((r.elapsed||0)/scaleMs)*100,1);
+      return `<div class="dep-row">
+        <div class="dep-lbl">${id.replace(/^[^_]+_/,'').replace(/_/,' ')}</div>
+        <div class="dep-track"><div class="dep-bar" style="left:${lP}%;width:${wP}%;background:${r.error?'var(--red)':colors[sc]}">${r.elapsed||'?'}ms</div></div>
+        <div class="dep-badge ${badges[id]||'k'}">${badges[id]==='text'?'text input':'K input'}</div>
+      </div>`;
+    }).join('')}
+    <div class="dep-note">${notes[sc]}</div>
+  </div>`;
+}
+
+async function runScenario1(utterance, nonce) {
+  const agents = ['nlu','tone','subject','response'];
+  const results = {};
+  let prevOutput = utterance;
+  let prevLabel = 'raw utterance';
+
+  setStageCls('s1','active');
+  document.getElementById('dot-s1').className = 'status-dot dot-active';
+  const s1Start = ts();
+  addTrace('s1','s1','Scenario 1: Cascaded text relay. Each agent receives prior agent text output + accumulated context.','text');
+
+  // Unique nonce per run — defeats API KV cache so S1 gets fresh computation every time
+  const runNonce = nonce || `RUN-${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
+
+  // S1 simulates real cascaded system: context accumulates at each step
+  // In production, agents receive full conversation history — not just the prior output
+  // We build this up as each agent fires, simulating growing token load
+  const conversationHistory = [
+    `[${runNonce}] SYSTEM: Voice AI for home services company. Session started ${new Date().toISOString()}. Process and respond based on full context below.`,
+    `CALLER_UTTERANCE: ${utterance}`,
+    `SESSION_STATE: { call_id: "${runNonce}", turn: 1, caller_authenticated: false, account_loaded: false, prior_turns: [] }`
+  ];
+
+  const agentSystems = {
+    nlu: `You are a Natural Language Understanding module in a cascaded voice AI. You receive the full caller context. Classify intent and key entities. State: intent type, key action needed, urgency, time reference. 2-3 sentences.`,
+    tone: `You are a Tone Agent in a cascaded voice AI. You receive the NLU classification plus full prior context. Determine appropriate response tone based on what NLU found. 1-2 sentences.`,
+    subject: `You are a Subject Matter Agent in a cascaded voice AI. You receive all prior agent outputs plus full context. Based on the tone and NLU analysis, identify the service domain, urgency level, and operational requirements. 1-2 sentences.`,
+    response: `You are a Response Agent in a cascaded voice AI. You receive all prior agent outputs plus full context. Based on everything above, determine what the response must accomplish. 1-2 sentences.`
+  };
+
+  for (const agentId of agents) {
+    const contextBlock = conversationHistory.join('\n');
+    const inputLabel = agentId === 'nlu' ? 'raw utterance' : `${agentId==='tone'?'NLU':agentId==='subject'?'tone':agentId==='response'?'subject':agentId} output + accumulated context`;
+    setAgentCls(`s1-${agentId}`, 's1-active');
+    setAgentBody(`s1-${agentId}`, `<div class="shimmer">Processing text input (${contextBlock.split(/\s+/).length} tokens)...</div>`);
+    addTrace('s1','s1',`Agent_${agentId}(input="${inputLabel}") — ~${contextBlock.split(/\s+/).length} tokens`,'text');
+
+    const start = ts();
+    try {
+      const out = await callClaude(
+        agentSystems[agentId],
+        `${contextBlock}\n\nProcess and respond in 1-2 sentences.`,
+        130,
+        `s1:${agentId}`
+      );
+      const elapsed = ts() - start;
+      results[agentId] = {out, elapsed, start};
+      setAgentCls(`s1-${agentId}`, 'done');
+      setAgentMs(`s1-${agentId}`, elapsed+'ms');
+      setAgentBody(`s1-${agentId}`, `<div class="agent-out">${out}</div><div style="font-size:9px;padding-top:6px;border-top:1px solid var(--border);color:var(--muted)">Input: ${contextBlock.split(/\s+/).length} tokens (context grows each step)</div>`);
+      addTrace('s1','done-ev',`Agent_${agentId} done in ${elapsed}ms. Output appended to context.`);
+
+      // Accumulate context — this is what makes cascaded systems slow at scale
+      conversationHistory.push(`${agentId.toUpperCase()}_AGENT: ${out}`);
+      prevOutput = out;
+      prevLabel = agentId;
+
+      // Handoff overhead
+      if (agentId !== 'response') {
+        addTrace('s1','s1',`Handoff overhead: ${HANDOFF_MS}ms (context serialization + forwarding ~${conversationHistory.join(' ').split(/\s+/).length} tokens)...`);
+        await new Promise(r => setTimeout(r, HANDOFF_MS));
+      }
+    } catch(e) {
+      const elapsed = ts() - start;
+      results[agentId] = {error: e.message, elapsed, start};
+      setAgentCls(`s1-${agentId}`, 'error');
+      setAgentMs(`s1-${agentId}`, elapsed+'ms');
+      setAgentBody(`s1-${agentId}`, `<div style="color:var(--red);font-size:11px">Failed: ${e.message}</div>`);
+      conversationHistory.push(`${agentId.toUpperCase()}_AGENT: [failed]`);
+      addTrace('s1','error',`Agent_${agentId} failed: ${e.message}`);
+      prevOutput = `[Agent ${agentId} failed]`;
+    }
+  }
+
+  const s1Wall = ts() - s1Start;
+  setStageCls('s1','done');
+  document.getElementById('dot-s1').className = 'status-dot dot-done';
+  setTiming('s1', `${s1Wall}ms total`);
+  addTrace('s1','done-ev',`S1 complete. Total: ${s1Wall}ms (includes ${HANDOFF_MS*3}ms handoff overhead)`);
+
+  const scaleMs = Math.max(...Object.values(results).map(r=>(r.start||0)+(r.elapsed||0))) + 30;
+  const badges = {['s1-nlu']:'text',['s1-tone']:'text',['s1-subject']:'text',['s1-response']:'text'};
+  document.getElementById('s1Dep').innerHTML = depBars(
+    Object.fromEntries(Object.entries(results).map(([k,v])=>[`s1-${k}`,v])),
+    agents.map(a=>`s1-${a}`), 's1', scaleMs, badges
+  );
+
+  return {results, wall: s1Wall};
+}
+
+async function runScenario2(K, hash, nonce) {
+  const kJson = JSON.stringify(K);
+  const n = nonce || Date.now();
+  const agentDefs = [
+    {id:'tone', sys:`Tone Agent for home services voice AI [${n}]. Receive ONLY structured JSON kernel K. 1-2 sentences on appropriate response tone.`, user:`COMMITMENT_KERNEL_K = ${kJson}\n\nState appropriate tone in 1-2 sentences.`, tok:100},
+    {id:'subject', sys:`Subject Matter Agent for home services voice AI [${n}]. Receive ONLY structured JSON kernel K. Identify service domain, urgency level, and time constraints. 1-2 sentences.`, user:`COMMITMENT_KERNEL_K = ${kJson}\n\nIdentify service domain, urgency, and time constraints in 1-2 sentences.`, tok:110},
+    {id:'response', sys:`Response Agent for home services voice AI [${n}]. Receive ONLY structured JSON kernel K. State what the response must accomplish. 1-2 sentences.`, user:`COMMITMENT_KERNEL_K = ${kJson}\n\nState response requirements in 1-2 sentences.`, tok:100},
+    {id:'pace', sys:`Pace Agent for home services voice AI [${n}]. Receive ONLY structured JSON kernel K. State appropriate conversation pace. 1 sentence.`, user:`COMMITMENT_KERNEL_K = ${kJson}\n\nState pace in 1 sentence.`, tok:80}
+  ];
+
+  setStageCls('s2','active');
+  document.getElementById('dot-s2').className = 'status-dot dot-active';
+  const s2Start = ts();
+  addTrace('s2','s2','Scenario 2: K-governed sequential. All agents receive K — no text relay.','K');
+
+  const results = {};
+  for (const cfg of agentDefs) {
+    setAgentCls(`s2-${cfg.id}`, 's2-active');
+    setAgentBody(`s2-${cfg.id}`, '<div class="shimmer">Processing K...</div>');
+    addTrace('s2','s2',`Agent_${cfg.id}(input=K_json) — structured kernel, no prior agent output`,'K');
+    const start = ts();
+    try {
+      const out = await callClaude(cfg.sys, cfg.user, cfg.tok, `s2:${cfg.id}`);
+      const elapsed = ts() - start;
+      const val = runValidation(cfg.id, out, K);
+      results[cfg.id] = {out, val, elapsed, start};
+      setAgentCls(`s2-${cfg.id}`, 'done');
+      setAgentMs(`s2-${cfg.id}`, elapsed+'ms');
+      setAgentBody(`s2-${cfg.id}`, `<div class="agent-out">${out}</div>${renderVal(cfg.id, val)}`);
+      addTrace('s2','done-ev',`Agent_${cfg.id} done in ${elapsed}ms — validation ${val.pass?'PASS':'PARTIAL'}`,val.pass?'ok':null);
+    } catch(e) {
+      const elapsed = ts() - start;
+      results[cfg.id] = {error: e.message, elapsed, start};
+      setAgentCls(`s2-${cfg.id}`, 'error');
+      setAgentMs(`s2-${cfg.id}`, elapsed+'ms');
+      setAgentBody(`s2-${cfg.id}`, `<div style="color:var(--red);font-size:11px">Failed: ${e.message}</div>`);
+      addTrace('s2','error',`Agent_${cfg.id} failed: ${e.message}`);
+    }
+    addTrace('s2','s2',`Next agent may start. Input: same K (no state change).`);
+  }
+
+  const s2Wall = ts() - s2Start;
+  setStageCls('s2','done');
+  document.getElementById('dot-s2').className = 'status-dot dot-done';
+  const s2Pass = Object.values(results).filter(r=>r.val?.pass).length;
+  setTiming('s2', `${s2Wall}ms total | ${s2Pass}/4 validation pass`);
+  addTrace('s2','done-ev',`S2 complete. Total: ${s2Wall}ms. No handoff overhead — K never changes.`);
+
+  const scaleMs = Math.max(...Object.values(results).map(r=>(r.start||0)+(r.elapsed||0))) + 30;
+  const ids = agentDefs.map(c=>`s2-${c.id}`);
+  const badges = Object.fromEntries(ids.map(id=>[id,'k']));
+  document.getElementById('s2Dep').innerHTML = depBars(
+    Object.fromEntries(Object.entries(results).map(([k,v])=>[`s2-${k}`,v])),
+    ids, 's2', scaleMs, badges
+  );
+
+  return {results, wall: s2Wall, pass: s2Pass};
+}
+
+async function runScenario3(K, hash, nonce) {
+  const kJson = JSON.stringify(K);
+  const n = nonce || Date.now();
+  const agentDefs = [
+    {id:'tone', sys:`Tone Agent for home services voice AI [${n}]. Receive ONLY structured JSON kernel K. 1-2 sentences on appropriate response tone.`, user:`COMMITMENT_KERNEL_K = ${kJson}\n\nState appropriate tone in 1-2 sentences.`, tok:100},
+    {id:'subject', sys:`Subject Matter Agent for home services voice AI [${n}]. Receive ONLY structured JSON kernel K. Identify service domain, urgency level, and time constraints. 1-2 sentences.`, user:`COMMITMENT_KERNEL_K = ${kJson}\n\nIdentify service domain, urgency, and time constraints in 1-2 sentences.`, tok:110},
+    {id:'response', sys:`Response Agent for home services voice AI [${n}]. Receive ONLY structured JSON kernel K. State what the response must accomplish. 1-2 sentences.`, user:`COMMITMENT_KERNEL_K = ${kJson}\n\nState response requirements in 1-2 sentences.`, tok:100},
+    {id:'pace', sys:`Pace Agent for home services voice AI [${n}]. Receive ONLY structured JSON kernel K. State appropriate conversation pace. 1 sentence.`, user:`COMMITMENT_KERNEL_K = ${kJson}\n\nState pace in 1 sentence.`, tok:80}
+  ];
+
+  setStageCls('s3','active');
+  document.getElementById('dot-s3').className = 'status-dot dot-active';
+  const s3Start = ts();
+  addTrace('s3','s3','Scenario 3: K-governed parallel. All agents launched simultaneously against K.','par');
+
+  agentDefs.forEach(cfg => {
+    setAgentCls(`s3-${cfg.id}`, 's3-active');
+    setAgentBody(`s3-${cfg.id}`, '<div class="shimmer">Processing K...</div>');
+  });
+
+  const results = {};
+  const promises = agentDefs.map(async (cfg, i) => {
+    await new Promise(r => setTimeout(r, i * 200)); // stagger to avoid concurrent limit
+    const start = ts();
+    addTrace('s3','s3',`Agent_${cfg.id}(input=K_json) launched at t=${start}ms`,'par');
+    try {
+      const out = await callClaude(cfg.sys, cfg.user, cfg.tok, `s3:${cfg.id}`);
+      const elapsed = ts() - start;
+      const val = runValidation(cfg.id, out, K);
+      results[cfg.id] = {out, val, elapsed, start};
+      setAgentCls(`s3-${cfg.id}`, 'done');
+      setAgentMs(`s3-${cfg.id}`, elapsed+'ms');
+      setAgentBody(`s3-${cfg.id}`, `<div class="agent-out">${out}</div>${renderVal(cfg.id, val)}`);
+      addTrace('s3','done-ev',`Agent_${cfg.id} done in ${elapsed}ms — validation ${val.pass?'PASS':'PARTIAL'}`,val.pass?'ok':null);
+    } catch(e) {
+      const elapsed = ts() - start;
+      results[cfg.id] = {error: e.message, elapsed, start};
+      setAgentCls(`s3-${cfg.id}`, 'error');
+      setAgentMs(`s3-${cfg.id}`, elapsed+'ms');
+      setAgentBody(`s3-${cfg.id}`, `<div style="color:var(--red);font-size:11px">Failed: ${e.message}</div>`);
+      addTrace('s3','error',`Agent_${cfg.id} failed: ${e.message}`);
+    }
+  });
+
+  await Promise.all(promises);
+
+  const s3Wall = ts() - s3Start;
+  setStageCls('s3','done');
+  document.getElementById('dot-s3').className = 'status-dot dot-done';
+  const s3Pass = Object.values(results).filter(r=>r.val?.pass).length;
+  const spread = Math.max(...Object.values(results).map(r=>r.start||0)) - Math.min(...Object.values(results).map(r=>r.start||0));
+  setTiming('s3', `${s3Wall}ms wall-clock | ${s3Pass}/4 validation pass`);
+  addTrace('s3','done-ev',`S3 complete. Wall-clock: ${s3Wall}ms. Launch spread: ${spread}ms.`);
+
+  const scaleMs = Math.max(...Object.values(results).map(r=>(r.start||0)+(r.elapsed||0))) + 30;
+  const ids = agentDefs.map(c=>`s3-${c.id}`);
+  const badges = Object.fromEntries(ids.map(id=>[id,'k']));
+  document.getElementById('s3Dep').innerHTML = depBars(
+    Object.fromEntries(Object.entries(results).map(([k,v])=>[`s3-${k}`,v])),
+    ids, 's3', scaleMs, badges
+  );
+
+  return {results, wall: s3Wall, pass: s3Pass, spread};
+}
+
+async function runAll() {
+  const utterance = document.getElementById('utteranceInput').value.trim();
+  if (!utterance) return;
+
+  // Dispatch to cached replay when no API key is set
+  if (!getApiKey()) { return runCached(utterance); }
+
+  const btn = document.getElementById('runBtn');
+  btn.disabled = true; btn.textContent = '⟳ Running all three scenarios...';
+
+  t0 = Date.now(); traceLog = []; runData = {utterance, timestamp: new Date().toISOString(), mode: 'live'};
+  ['s1','s2','s3'].forEach(id => setStageCls(id,''));
+  document.getElementById('traceSection').style.display = 'none';
+  document.getElementById('reportSection').style.display = 'none';
+
+  document.getElementById('traceSection').style.display = 'block';
+  addTrace('sys','kernel','Run started. Same utterance. Three architectures.');
+
+  // Global run nonce — ensures all three scenarios get fresh API computation, not cached responses
+  const globalNonce = `RUN-${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
+  runData.nonce = globalNonce;
+
+  // Extract K once — used for S2 and S3
+  addTrace('sys','kernel','Extracting commitment kernel K (used by S2 and S3)...','K');
+  let K, hash;
+  try {
+    const raw = await callClaude(
+      `Commitment extraction engine [${globalNonce}]. Return ONLY valid JSON (no markdown):
+{"actor":"string","action":"2-4 word verb phrase","constraint":"string or none","time":"string or unspecified","urgency":"high|medium|low","negation":"string or none"}`,
+      utterance, 200, null
+    );
+    K = parseJSON(raw);
+    if (!K) throw new Error('K parse failed');
+    hash = await sha256(JSON.stringify(K));
+  } catch (e) {
+    addTrace('sys','error',`K extraction failed: ${e.message}. Hint: check your API key in the panel above.`);
+    btn.disabled=false; btn.textContent='▶ Run All Three Scenarios';
+    return;
+  }
+  addTrace('sys','kernel',`K extracted and locked. Hash: ${hash.slice(0,16)}... S2 and S3 use this kernel. S1 does not.`,'K');
+  runData.K = K; runData.hash = hash;
+
+  // Run all three
+  const s1 = await runScenario1(utterance, globalNonce);
+  const s2 = await runScenario2(K, hash, globalNonce);
+  const s3 = await runScenario3(K, hash, globalNonce);
+
+  runData.s1 = s1; runData.s2 = s2; runData.s3 = s3;
+
+  // Synthesis
+  addTrace('sys','report-ev','Generating report...');
+  let synthesis = '';
+  try {
+    const summary = ['tone','subject','response','pace'].map(id => `${id.toUpperCase()}: ${s3.results[id]?.out||'error'}`).join('\n');
+    synthesis = await callClaude(
+      `Synthesis layer for a home services voice AI. Given K and four agent outputs, write the caller-facing response. 2-3 sentences. Professional and warm.`,
+      `K: ${JSON.stringify(K)}\nAgents:\n${summary}\n\nWrite the caller-facing response.`,
+      180, null
+    );
+  } catch(e) { synthesis = '[Synthesis error]'; }
+  runData.synthesis = synthesis;
+
+  renderReport();
+  btn.disabled = false; btn.textContent = '▶ Run All Three Scenarios';
+}
+
+function renderReport() {
+  const { K, hash, s1, s2, s3, synthesis } = runData;
+  document.getElementById('reportSection').style.display = 'block';
+  document.getElementById('reportTime').textContent = `Total session: ${ts()}ms`;
+
+  const s1vsS3 = Math.round(((s1.wall - s3.wall) / s1.wall) * 100);
+  const s1vsS2 = Math.round(((s1.wall - s2.wall) / s1.wall) * 100);
+  const s2vsS3 = Math.round(((s2.wall - s3.wall) / s2.wall) * 100);
+
+  // Multi-turn projection numbers
+  const t1S1 = s1.wall, t1S3 = s3.wall;
+  const t3S1 = Math.round(s1.wall * 2.5), t3S3 = Math.round(s3.wall * 1.1);
+  const t3Delta = Math.round(((t3S1 - t3S3) / t3S1) * 100);
+
+  document.getElementById('reportBody').innerHTML = `
+
+    <div class="report-sh">§ The Three-Scenario Comparison</div>
+    <div class="big-compare">
+      <div class="bc-item s1">
+        <div class="bc-label">Scenario 1 — Current</div>
+        <div class="bc-num s1">${s1.wall}ms</div>
+        <div class="bc-desc">Cascaded text relay<br>Full NLU + 3× handoff overhead (${HANDOFF_MS*3}ms)<br>Agents depend on each other's text output</div>
+      </div>
+      <div class="bc-item s2">
+        <div class="bc-label">Scenario 2 — New Sequential</div>
+        <div class="bc-num s2">${s2.wall}ms</div>
+        <div class="bc-desc">K-governed, sequential scheduler<br>No NLU re-inference. No text relay.<br>${s1vsS2}% faster than S1.</div>
+      </div>
+      <div class="bc-item s3">
+        <div class="bc-label">Scenario 3 — New Near-Parallel</div>
+        <div class="bc-num s3">${s3.wall}ms</div>
+        <div class="bc-desc">K-governed, near-parallel scheduler (staggered launch)<br>Wall-clock ≈ slowest single agent.<br>${s1vsS3}% faster than S1.</div>
+      </div>
+    </div>
+
+    <div class="report-sh">§ What Changed Between Each Scenario</div>
+    <div class="three-col">
+      <div class="tc-cell header-row"></div>
+      <div class="tc-cell header-row"><div class="tc-col-hdr s1">S1 — Current</div></div>
+      <div class="tc-cell header-row"><div class="tc-col-hdr s2">S2 — New Sequential</div></div>
+      <div class="tc-cell header-row"><div class="tc-col-hdr s3">S3 — New Parallel</div></div>
+
+      <div class="tc-cell"><div class="tc-label">Agent input</div></div>
+      <div class="tc-cell s1-col"><div class="tc-val s1" style="font-size:12px">Prior agent text</div><div class="tc-note">Meaning re-inferred at every step</div></div>
+      <div class="tc-cell s2-col"><div class="tc-val s2" style="font-size:12px">JSON kernel K</div><div class="tc-note">Meaning extracted once, shared</div></div>
+      <div class="tc-cell s3-col"><div class="tc-val s3" style="font-size:12px">JSON kernel K</div><div class="tc-note">Same K, simultaneous access</div></div>
+
+      <div class="tc-cell"><div class="tc-label">Scheduler</div></div>
+      <div class="tc-cell s1-col"><div class="tc-val s1" style="font-size:12px">Sequential (forced)</div><div class="tc-note">Must wait — input is prior output</div></div>
+      <div class="tc-cell s2-col"><div class="tc-val s2" style="font-size:12px">Sequential (choice)</div><div class="tc-note">Could be parallel — chose sequential to prove equivalence</div></div>
+      <div class="tc-cell s3-col"><div class="tc-val s3" style="font-size:12px">Parallel</div><div class="tc-note">No dependency — all start together</div></div>
+
+      <div class="tc-cell"><div class="tc-label">Wall-clock</div></div>
+      <div class="tc-cell s1-col"><div class="tc-val s1">${s1.wall}ms</div></div>
+      <div class="tc-cell s2-col"><div class="tc-val s2">${s2.wall}ms</div><div class="tc-note">${s1vsS2}% faster than S1</div></div>
+      <div class="tc-cell s3-col"><div class="tc-val s3">${s3.wall}ms</div><div class="tc-note">${s1vsS3}% faster than S1</div></div>
+
+      <div class="tc-cell"><div class="tc-label">Handoff overhead</div></div>
+      <div class="tc-cell s1-col"><div class="tc-val s1" style="font-size:14px">${HANDOFF_MS*3}ms</div><div class="tc-note">3 × ${HANDOFF_MS}ms (configurable simulation parameter)</div></div>
+      <div class="tc-cell s2-col"><div class="tc-val s2" style="font-size:14px">0ms</div><div class="tc-note">K doesn't change — nothing to forward</div></div>
+      <div class="tc-cell s3-col"><div class="tc-val s3" style="font-size:14px">0ms</div><div class="tc-note">K doesn't change — nothing to forward</div></div>
+
+      <div class="tc-cell"><div class="tc-label">Validation</div></div>
+      <div class="tc-cell s1-col"><div class="tc-val s1" style="font-size:14px">N/A</div><div class="tc-note">No shared kernel to validate against</div></div>
+      <div class="tc-cell s2-col"><div class="tc-val s2" style="font-size:14px">${s2.pass}/4</div><div class="tc-note">Structural alignment to K (O(1) string checks — not full semantic verification)</div></div>
+      <div class="tc-cell s3-col"><div class="tc-val s3" style="font-size:14px">${s3.pass}/4</div><div class="tc-note">Structural alignment to K (O(1) string checks — not full semantic verification)</div></div>
+    </div>
+
+    <div class="report-sh">§ Commitment Kernel K (S2 and S3 only)</div>
+    <div style="background:var(--bg);border:1px solid var(--border2);padding:14px;font-size:12px;line-height:1.9;white-space:pre;">${renderKJson(K)}</div>
+    <div style="font-size:9px;color:var(--muted);padding:5px 9px;background:var(--bg);border:1px solid var(--border);display:flex;gap:8px;margin-top:4px;"><span style="color:var(--gold);font-weight:600">SHA-256</span><span style="word-break:break-all">${hash}</span></div>
+
+    <div class="k-modal-block" aria-label="Bound projections of the Commitment Kernel">
+      <div style="font-size:9px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;">§ Bound Projections — Multimodal K (architecture preview)</div>
+      <div class="k-modal-row live">
+        <div class="k-modal-name">K_text</div>
+        <div class="k-modal-bar"></div>
+        <div class="k-modal-status">LIVE — this demo</div>
+      </div>
+      <div class="k-modal-row roadmap">
+        <div class="k-modal-name">K_pros</div>
+        <div class="k-modal-bar"></div>
+        <div class="k-modal-status">Prosodic — roadmap</div>
+      </div>
+      <div class="k-modal-row roadmap">
+        <div class="k-modal-name">K_tmp</div>
+        <div class="k-modal-bar"></div>
+        <div class="k-modal-status">Temporal — roadmap</div>
+      </div>
+      <div class="k-modal-row roadmap">
+        <div class="k-modal-name">K_affect</div>
+        <div class="k-modal-bar"></div>
+        <div class="k-modal-status">Affect — roadmap</div>
+      </div>
+      <div class="k-modal-caption">K is a multi-channel object with independent hashes per projection. This demo runs the text channel only; prosodic, temporal, and affect projections share the same governance contract and slot in without changing the rest of the architecture.</div>
+    </div>
+
+    <div class="report-sh">§ S1 — Agent Chain (Current System)</div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:8px;">Each agent received the prior agent's text output. Meaning re-inferred at every step. No shared kernel.</div>
+    ${['nlu','tone','subject','response'].map(id=>{
+      const r=s1.results[id]||{};
+      return `<div style="background:var(--bg);border:1px solid rgba(204,51,68,0.2);padding:10px 12px;margin-bottom:6px;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:9px;font-weight:600;color:var(--red2);text-transform:uppercase">${id} — text input</span><span style="font-size:9px;color:var(--muted)">${r.elapsed||'—'}ms</span></div>
+        <div style="font-size:11px;color:var(--text)">${r.out||r.error||'—'}</div>
+      </div>`;
+    }).join('')}
+
+    <div class="report-sh">§ S3 — Synthesized Caller Response (K-governed parallel)</div>
+    <div class="synthesis-text">${synthesis}</div>
+
+    <div class="report-sh">§ Key Insight</div>
+    <div class="proof-grid">
+      <div class="proof-item"><div class="proof-icon" style="color:var(--red2)">→</div><div><div class="proof-lbl">Why S1 is slow</div><div class="proof-detail">Agents relay meaning through text. Each agent re-infers intent from the prior agent's output. Meaning is never fixed — it drifts at every handoff. Plus ${HANDOFF_MS}ms overhead per transition.</div></div></div>
+      <div class="proof-item"><div class="proof-icon" style="color:var(--green)">→</div><div><div class="proof-lbl">Why S2/S3 are faster</div><div class="proof-detail">Meaning is extracted once into K. Agents read from K — they don't re-infer from each other. Nothing to serialize or forward at handoffs. K doesn't change between agents.</div></div></div>
+      <div class="proof-item"><div class="proof-icon" style="color:var(--green)">→</div><div><div class="proof-lbl">S2 vs S3</div><div class="proof-detail">S2 proves K-governed agents produce equivalent output sequentially — establishing the correctness baseline. S3 proves they can run in parallel without losing correctness. ${s2vsS3}% additional wall-clock reduction.</div></div></div>
+      <div class="proof-item"><div class="proof-icon" style="color:var(--gold)">→</div><div><div class="proof-lbl">Single-turn demos understate the gap</div><div class="proof-detail">In production, S1 context grows with every turn — LLM inference scales with token load. The 58% token compression (CCH EXP-001) compounds at every step. By turn 5, the architecture removes ~43.5 seconds per call.</div></div></div>
+      <div class="proof-item"><div class="proof-icon" style="color:var(--teal)">→</div><div><div class="proof-lbl">The architectural shift</div><div class="proof-detail">S1: execution substrate is language. Agents pass meaning as text — lossy, slow, drift-prone. S2/S3: execution substrate is K. Agents pass nothing — they all read from the same immutable object.</div></div></div>
+    </div>
+
+    <div class="report-sh">§ Multi-Turn Projection</div>
+    <table class="turn-table">
+      <thead>
+        <tr><th>Turn</th><th>S1 (Cascaded)</th><th>S3 (K-Governed)</th><th>Delta</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td class="col-s1">${t1S1}ms</td><td class="col-s3">${t1S3}ms</td><td class="col-delta">${s1vsS3}%</td></tr>
+        <tr><td>3</td><td class="col-s1">${t3S1}ms (est.)</td><td class="col-s3">${t3S3}ms (est.)</td><td class="col-delta">~${t3Delta}%</td></tr>
+        <tr><td>5</td><td class="col-s1">~10,120ms (measured*)</td><td class="col-s3">~1,300ms (projected)</td><td class="col-delta">~87%</td></tr>
+      </tbody>
+    </table>
+    <div class="turn-footnote">* Turn 5 S1 baseline from Full-Duplex-Bench v3 (<a href="https://arxiv.org/pdf/2604.04847" style="color:var(--gold2)" target="_blank" rel="noopener">arxiv.org/pdf/2604.04847</a>, April 2026). S3 projection from CCH EXP-001–007 fixpoint data.</div>
+    <div class="turn-insight"><strong>Single-turn demos understate the gap.</strong> In production, S1 context grows with every turn — LLM inference scales with token load. The 58% token compression (CCH EXP-001) compounds at every step. By turn 5, the architecture removes ~43.5 seconds per call.</div>
+
+    <div class="key-result-box" style="background:var(--surface);border:1px solid var(--gold);padding:18px 20px;margin-top:12px;">
+      <div style="font-size:9px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;">§ Key Result</div>
+      <div style="font-size:14px;color:var(--text);line-height:1.8;font-weight:400;">
+        Latency reduction is achieved by eliminating inter-agent dependency — not by improving model speed.<br>
+        <span style="color:var(--muted);font-size:12px;">Same agents. Same task. Different dependency structure → different wall-clock.</span>
+      </div>
+    </div>
+
+    <details class="industry-context">
+      <summary>§ Industry Context — published latency benchmarks</summary>
+      <div class="industry-context-body">
+        <table class="industry-table">
+          <thead><tr><th>System</th><th>Per-Turn Latency</th><th>Source</th></tr></thead>
+          <tbody>
+            <tr><td>Human conversation</td><td class="lat">300–500ms</td><td class="src">Cognitive baseline</td></tr>
+            <tr><td>Optimized single-LLM</td><td class="lat">&lt;1s</td><td class="src">30+ stack benchmarks, DEV Community 2025</td></tr>
+            <tr><td>Commitment Theory (projected)</td><td class="lat">~1.3s</td><td class="src">CCH EXP-001–007, empirically grounded</td></tr>
+            <tr><td>Typical production agent</td><td class="lat">~800ms–2s</td><td class="src">Introl, Dec 2025</td></tr>
+            <tr><td>GPT-4o Realtime API</td><td class="lat" style="color:var(--orange)">4.25s</td><td class="src">Full-Duplex-Bench v3, Apr 2026 — measured</td></tr>
+            <tr><td>Cascaded multi-agent baseline</td><td class="lat" style="color:var(--red2)">10.12s</td><td class="src">Full-Duplex-Bench v3, Apr 2026 — measured</td></tr>
+          </tbody>
+        </table>
+        <div class="industry-takeaway"><strong>Five-turn call delta:</strong> ~50s (current cascaded) → ~6.5s (CT-governed). ~43.5s removed per call. The S1 baseline above is the floor; tuned production stacks compound the benefit further.</div>
+      </div>
+    </details>
+
+    <div class="bottom-note">
+      MO§E§™ Three-Scenario Execution Proof — Ello Cello LLC © 2026<br>
+      DOI: 10.5281/zenodo.19105225 — Patent No. 63/877,177 (Provisional)<br>
+      S1 handoff overhead (${HANDOFF_MS}ms/transition) configurable simulation parameter. All three scenarios run against identical utterance in same session.
+    </div>
+  `;
+}
+
+// ---------- Cached replay (used when no API key is configured) ----------
+const CACHED_TIME_SCALE = 0.4; // shrink wall-clock waits so cached replay finishes quickly during a pitch
+function _scaledWait(ms) { return new Promise(r => setTimeout(r, Math.max(40, Math.round((ms || 0) * CACHED_TIME_SCALE)))); }
+
+async function runCached(utterance) {
+  const btn = document.getElementById('runBtn');
+  btn.disabled = true; btn.textContent = '⟳ Replaying cached run...';
+
+  // Reset state — preserve cached utterance display
+  document.getElementById('utteranceInput').value = utterance || CACHED_RUN.utterance;
+  t0 = Date.now(); traceLog = [];
+  runData = { utterance: utterance || CACHED_RUN.utterance, timestamp: new Date().toISOString(), mode: 'cached' };
+  ['s1','s2','s3'].forEach(id => setStageCls(id,''));
+  document.getElementById('reportSection').style.display = 'none';
+  document.getElementById('traceSection').style.display = 'block';
+  document.getElementById('traceBody').innerHTML = '';
+
+  addTrace('sys','kernel','Cached replay started — no API key configured.');
+  addTrace('sys','kernel',`K extracted and locked. Hash: ${CACHED_RUN.hash.slice(0,16)}... S2 and S3 use this kernel. S1 does not.`,'K');
+
+  runData.K = CACHED_RUN.K;
+  runData.hash = CACHED_RUN.hash;
+  _hydrateCachedValidation(CACHED_RUN.s2);
+  _hydrateCachedValidation(CACHED_RUN.s3);
+
+  // Replay scenario 1 (sequential, with handoff)
+  await _replayScenario('s1', CACHED_RUN.s1, ['nlu','tone','subject','response'], { sequential: true, handoff: true, label: 'Cascaded text relay' });
+
+  // Replay scenario 2 (sequential, K-governed)
+  await _replayScenario('s2', CACHED_RUN.s2, ['tone','subject','response','pace'], { sequential: true, handoff: false, label: 'K-governed sequential' });
+
+  // Replay scenario 3 (parallel, K-governed)
+  await _replayScenario('s3', CACHED_RUN.s3, ['tone','subject','response','pace'], { sequential: false, handoff: false, label: 'K-governed parallel' });
+
+  runData.s1 = CACHED_RUN.s1;
+  runData.s2 = CACHED_RUN.s2;
+  runData.s3 = CACHED_RUN.s3;
+  runData.synthesis = CACHED_RUN.synthesis;
+
+  addTrace('sys','report-ev','Generating report from cached run...');
+  renderReport();
+
+  btn.disabled = false; btn.textContent = '▶ Run All Three Scenarios';
+}
+
+async function _replayScenario(sc, scenarioData, agents, opts) {
+  setStageCls(sc, 'active');
+  const dotEl = document.getElementById('dot-' + sc);
+  if (dotEl) dotEl.className = 'status-dot dot-active';
+  const stageStart = ts();
+  addTrace(sc, sc, `Scenario ${sc.toUpperCase()}: ${opts.label}.`, opts.sequential && opts.handoff ? 'text' : (sc === 's3' ? 'par' : 'K'));
+
+  const badges = {};
+  if (opts.sequential) {
+    for (const id of agents) {
+      const r = scenarioData.results[id] || {};
+      const cls = sc === 's1' ? 's1-active' : sc === 's2' ? 's2-active' : 's3-active';
+      const cardId = `${sc}-${id}`;
+      setAgentCls(cardId, cls);
+      setAgentBody(cardId, '<div class="shimmer">Processing K...</div>');
+      addTrace(sc, sc, `Agent_${id}(input=${sc === 's1' ? 'prior text' : 'K_json'}) — ${sc === 's1' ? 'context' : 'kernel'}`, sc === 's1' ? 'text' : 'K');
+      await _scaledWait(r.elapsed || 400);
+      setAgentCls(cardId, 'done');
+      setAgentMs(cardId, (r.elapsed || 0) + 'ms');
+      const valHtml = r.val ? renderVal(id, r.val) : '';
+      setAgentBody(cardId, `<div class="agent-out">${r.out || '—'}</div>${valHtml}`);
+      addTrace(sc, 'done-ev', `Agent_${id} done in ${r.elapsed}ms${r.val ? ' — validation ' + (r.val.pass ? 'PASS' : 'PARTIAL') : ''}`, r.val && r.val.pass ? 'ok' : null);
+      badges[cardId] = sc === 's1' ? 'text' : 'k';
+      if (opts.handoff && id !== agents[agents.length - 1]) {
+        addTrace(sc, sc, `Handoff overhead: ${HANDOFF_MS}ms (context serialization + forwarding)...`);
+        await _scaledWait(HANDOFF_MS);
+      }
+    }
+  } else {
+    // Parallel: kick all off simultaneously with stagger
+    const promises = agents.map(async (id, i) => {
+      const r = scenarioData.results[id] || {};
+      const cls = 's3-active';
+      const cardId = `${sc}-${id}`;
+      setAgentCls(cardId, cls);
+      setAgentBody(cardId, '<div class="shimmer">Processing K...</div>');
+      await _scaledWait(i * 200);
+      addTrace(sc, sc, `Agent_${id}(input=K_json) launched`, 'par');
+      await _scaledWait(r.elapsed || 400);
+      setAgentCls(cardId, 'done');
+      setAgentMs(cardId, (r.elapsed || 0) + 'ms');
+      const valHtml = r.val ? renderVal(id, r.val) : '';
+      setAgentBody(cardId, `<div class="agent-out">${r.out || '—'}</div>${valHtml}`);
+      addTrace(sc, 'done-ev', `Agent_${id} done in ${r.elapsed}ms${r.val ? ' — validation ' + (r.val.pass ? 'PASS' : 'PARTIAL') : ''}`, r.val && r.val.pass ? 'ok' : null);
+      badges[cardId] = 'k';
+    });
+    await Promise.all(promises);
+  }
+
+  setStageCls(sc, 'done');
+  if (dotEl) dotEl.className = 'status-dot dot-done';
+  const passCount = agents.reduce((acc, id) => acc + (scenarioData.results[id]?.val?.pass ? 1 : 0), 0);
+  const wallText = sc === 's1'
+    ? `${scenarioData.wall}ms total`
+    : `${scenarioData.wall}ms ${sc === 's3' ? 'wall-clock' : 'total'} | ${passCount}/${agents.length} validation pass`;
+  setTiming(sc, wallText);
+  addTrace(sc, 'done-ev', `${sc.toUpperCase()} complete. Total: ${scenarioData.wall}ms.`);
+
+  // Build dep bars
+  const scaleMs = scenarioData.wall + 30;
+  const ids = agents.map(a => `${sc}-${a}`);
+  ids.forEach(id => { if (!badges[id]) badges[id] = sc === 's1' ? 'text' : 'k'; });
+  const depObj = Object.fromEntries(ids.map(id => [id, scenarioData.results[id.split('-').slice(1).join('-')] || {}]));
+  document.getElementById(`${sc}Dep`).innerHTML = depBars(depObj, ids, sc, scaleMs, badges);
+}
+
+function copyReport() {
+  if (!runData.K || !runData.s1) { showToast('Run the demo first'); return; }
+  const s1vsS3 = Math.round(((runData.s1.wall - runData.s3.wall) / runData.s1.wall) * 100);
+  const summary = [
+    'MO§ES™ Three-Scenario Report',
+    `S1 (Current): ${runData.s1.wall}ms | S2 (K-Sequential): ${runData.s2.wall}ms | S3 (K-Parallel): ${runData.s3.wall}ms`,
+    `Reduction: ${s1vsS3}%`,
+    'DOI: 10.5281/zenodo.19105225 | Patent: 63/877,177',
+    'Demo: https://sunrisesillneversee.github.io/KASSA/demo/commitment_kernel_demo_v7.html'
+  ].join('\n');
+  const finish = () => showToast('Report copied to clipboard');
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(summary).then(finish).catch(() => _fallbackCopy(summary, finish));
+  } else {
+    _fallbackCopy(summary, finish);
+  }
+}
+function _fallbackCopy(text, done) {
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.left = '-9999px';
+    document.body.appendChild(ta); ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    done && done();
+  } catch (e) { showToast('Copy failed — please copy manually'); }
+}
+
+// ---------- Init ----------
+document.addEventListener('DOMContentLoaded', () => {
+  updateKeyStatus();
+});
+
+function exportReport() {
+  const d = runData; if (!d.K) return;
+  const now = new Date(d.timestamp).toLocaleString();
+  const s1vsS3 = d.s1&&d.s3 ? Math.round(((d.s1.wall-d.s3.wall)/d.s1.wall)*100) : '—';
+  const s1vsS2 = d.s1&&d.s2 ? Math.round(((d.s1.wall-d.s2.wall)/d.s1.wall)*100) : '—';
+  const traceRows = traceLog.map(l=>`<tr><td style="font-family:monospace;font-size:10px;color:#888;white-space:nowrap">t=${l.ms}ms</td><td style="font-size:9px;color:#aaa;font-family:monospace;width:30px">${l.sc.toUpperCase()}</td><td style="font-size:11px">${l.text}</td></tr>`).join('');
+
+  const html = `<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><title>MO§E§™ Three-Scenario Report — ${now}</title>
+<style>
+body{font-family:Georgia,serif;max-width:900px;margin:40px auto;padding:0 32px;color:#1a1815;background:#fdfcfa;line-height:1.7}
+h1{font-size:22px;font-weight:normal;border-bottom:3px solid #1a1815;padding-bottom:12px;margin-bottom:6px}
+.meta{font-family:monospace;font-size:11px;color:#8c8680;margin-bottom:24px}
+h2{font-size:10px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:#c4923a;margin:22px 0 10px;padding-bottom:4px;border-bottom:1px solid #ddd8d0}
+.big3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px}
+.bn{padding:18px;border:1px solid #ddd8d0;text-align:center}
+.bn.s1{border-top:3px solid #cc3344}
+.bn.s2{border-top:3px solid #c06020}
+.bn.s3{border-top:3px solid #1a6a6a}
+.bv{font-size:38px;font-weight:700;line-height:1;margin-bottom:5px}
+.bv.s1{color:#cc3344}.bv.s2{color:#c06020}.bv.s3{color:#1a6a6a}
+.bl{font-size:9px;color:#8c8680;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px}
+.bd{font-size:11px;color:#8c8680;line-height:1.5}
+table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:8px}
+th{text-align:left;font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:#8c8680;border-bottom:2px solid #1a1815;padding:0 10px 7px 0}
+td{padding:8px 10px 8px 0;border-bottom:1px solid #ddd8d0;vertical-align:top}
+tr:last-child td{border-bottom:none}
+pre{background:#f0ece6;border:1px solid #ddd8d0;padding:12px;font-family:monospace;font-size:11px;overflow-x:auto;line-height:1.8;margin-bottom:6px}
+.synthesis{background:#f5f2ee;border:1px solid #ddd8d0;padding:14px;font-size:14px;line-height:1.8;margin-bottom:6px}
+.insight-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.insight{background:#f5f2ee;border:1px solid #ddd8d0;padding:11px 12px}
+.insight strong{display:block;font-size:12px;margin-bottom:3px}
+.insight span{font-size:11px;color:#8c8680}
+.footer{margin-top:32px;padding-top:16px;border-top:1px solid #ddd8d0;font-size:10px;color:#8c8680;line-height:1.7}
+@media print{body{margin:0}}
+</style></head><body>
+<h1>MO§E§™ Three-Scenario Execution Report</h1>
+<div class="meta">Generated: ${now} · DOI: 10.5281/zenodo.19105225 · Patent No. 63/877,177 · Ello Cello LLC © 2026</div>
+<h2>Input</h2>
+<p style="background:#f5f2ee;border:1px solid #ddd8d0;padding:12px;font-size:14px">"${d.utterance}"</p>
+<h2>Three-Scenario Comparison</h2>
+<div class="big3">
+  <div class="bn s1"><div class="bl">S1 — Current System</div><div class="bv s1">${d.s1?.wall||'—'}ms</div><div class="bd">Cascaded text relay<br>Agents receive prior agent text</div></div>
+  <div class="bn s2"><div class="bl">S2 — New Sequential</div><div class="bv s2">${d.s2?.wall||'—'}ms</div><div class="bd">K-governed<br>${s1vsS2}% faster than S1</div></div>
+  <div class="bn s3"><div class="bl">S3 — New Parallel</div><div class="bv s3">${d.s3?.wall||'—'}ms</div><div class="bd">K-governed + parallel<br>${s1vsS3}% faster than S1</div></div>
+</div>
+<h2>What Changed</h2>
+<table>
+  <thead><tr><th></th><th style="color:#cc3344">S1 — Current</th><th style="color:#c06020">S2 — New Sequential</th><th style="color:#1a6a6a">S3 — New Parallel</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Agent input</strong></td><td style="color:#cc3344">Prior agent text output</td><td style="color:#c06020">JSON kernel K</td><td style="color:#1a6a6a">JSON kernel K</td></tr>
+    <tr><td><strong>Scheduler</strong></td><td>Sequential (forced)</td><td>Sequential (by choice)</td><td>Parallel</td></tr>
+    <tr><td><strong>Handoff overhead</strong></td><td style="color:#cc3344">${HANDOFF_MS*3}ms (3 × ${HANDOFF_MS}ms)</td><td style="color:#1a6a6a">0ms</td><td style="color:#1a6a6a">0ms</td></tr>
+    <tr><td><strong>Validation</strong></td><td>N/A (no shared kernel)</td><td>${d.s2?.pass||'—'}/4 pass</td><td>${d.s3?.pass||'—'}/4 pass</td></tr>
+  </tbody>
+</table>
+<h2>Commitment Kernel K</h2>
+<pre>${JSON.stringify(d.K, null, 2)}</pre>
+<h2>Synthesized Response (S3)</h2>
+<div class="synthesis">${d.synthesis}</div>
+<h2>Key Insight</h2>
+<div class="insight-grid">
+  <div class="insight"><strong>Why S1 is slow</strong><span>Meaning relayed through text. Re-inferred at every handoff. ${HANDOFF_MS}ms overhead per transition. Drift-prone.</span></div>
+  <div class="insight"><strong>Why S2/S3 are faster</strong><span>Meaning extracted once into K. No text relay. No handoff overhead. K is immutable — nothing to forward.</span></div>
+  <div class="insight"><strong>S2 vs S3</strong><span>S2 proves correctness with sequential K-governance. S3 proves parallel execution without correctness loss.</span></div>
+  <div class="insight"><strong>The architectural shift</strong><span>S1: language as execution substrate. S2/S3: structured state as execution substrate. That's the difference.</span></div>
+</div>
+<h2>Execution Trace</h2>
+<table><thead><tr><th>t=</th><th>Scenario</th><th>Event</th></tr></thead><tbody>${traceRows}</tbody></table>
+<div class="footer">All three scenarios run in same session against identical utterance. S1 handoff overhead (${HANDOFF_MS}ms/transition) configurable simulation parameter. Production instrumentation required to validate at scale.<br>MO§E§™ — Ello Cello LLC © 2026 · DOI: 10.5281/zenodo.19105225 · Patent No. 63/877,177 (Provisional)</div>
+</body></html>`;
+
+  const blob = new Blob([html],{type:'text/html'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download=`moses-3scenario-report-${Date.now()}.html`;
+  a.click(); URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>

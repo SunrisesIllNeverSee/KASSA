@@ -6,7 +6,9 @@ A substrate-level architecture for voice AI that solves the state commitment and
 
 ### 1. The Demo (Latency & Drift Visualization)
 View the interactive S1/S2/S3 simulation directly in your browser:
-**[Live Commitment Kernel Demo (v6)](https://sunrisesillneversee.github.io/KASSA/demo/commitment_kernel_demo_v6.html)**
+**[Live Commitment Kernel Demo (v7)](https://sunrisesillneversee.github.io/KASSA/demo/commitment_kernel_demo_v7.html)**
+
+The page works without credentials — it replays a cached live run by default. To execute against the model, paste an Anthropic API key into the collapsible panel at the top (stored in `sessionStorage` only). The earlier [v6 demo](https://sunrisesillneversee.github.io/KASSA/demo/commitment_kernel_demo_v6.html) is preserved as an archive.
 
 ### 2. The Harness (Falsifiability Testing)
 Run the Commitment Conservation Harness (CCH) to measure semantic stability over recursive loops:
