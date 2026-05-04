@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  sanity:
+    name: Syntax and schema checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Compile harness
+        run: python -m compileall harness
+
+      - name: Validate K schema
+        run: python -m json.tool schema/K_bound_projections_schema.json > /dev/null
+
+      - name: Validate corpora
+        run: |
+          for file in harness/corpora/*.json; do
+            python -m json.tool "$file" > /dev/null
+          done
