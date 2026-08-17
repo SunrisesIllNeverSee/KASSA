@@ -8,7 +8,7 @@
 
 > A substrate-level architecture for voice AI: commit state once, hash-lock it, and let downstream agents consume K read-only.
 
-KASSA explores the **K-Governed Voice Architecture**, a commitment-kernel approach to voice AI orchestration. The core thesis is simple:
+KASSA explores the **K-Governed Voice Architecture**, a commitment-kernel approach to voice AI orchestration. KASSA demonstrates principles of [MO§ES™](https://mos2es.com). The core thesis is simple:
 
 > **Commit state before intelligence branches.**
 
@@ -125,6 +125,9 @@ Latency numbers in single-turn model demos can be compressed by provider-side KV
 ## Related Work
 
 - Conservation Law paper: [`docs/CONSERVATION_LAW_PAPER.md`](docs/CONSERVATION_LAW_PAPER.md)
+- Conservation Law repo: [https://github.com/SunrisesIllNeverSee/commitment-conservation](https://github.com/SunrisesIllNeverSee/commitment-conservation)
+- Commitment Theory repo: [https://github.com/SunrisesIllNeverSee/Commitment_Theory](https://github.com/SunrisesIllNeverSee/Commitment_Theory)
+- MO§ES™: [https://mos2es.com](https://mos2es.com)
 - Deep wiki: [`docs/DEEP_WIKI.md`](docs/DEEP_WIKI.md)
 - Build doc: [`docs/K-governed-voice-architecture-build-doc.md`](docs/K-governed-voice-architecture-build-doc.md)
 - Public IP boundary: [`harness/ip_boundary.md`](harness/ip_boundary.md)

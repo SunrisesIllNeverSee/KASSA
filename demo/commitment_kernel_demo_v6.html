@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MO§E§™ — Three-Scenario Execution Comparison</title>
+<title>MO§ES™ — Three-Scenario Execution Comparison</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -237,7 +237,7 @@
 <div class="app">
 
   <div class="header">
-    <div class="header-tag">MO§E§™ — Three-Scenario Execution Comparison</div>
+    <div class="header-tag">MO§ES™ — Three-Scenario Execution Comparison</div>
     <div class="header-title">Current System vs New System:<br><span>Same Input. Same Agents. Three Architectures.</span></div>
     <div class="header-sub">All three scenarios run in the same session against the same utterance. Scenario 1 simulates the current cascaded system — agents receive each other's text output, full NLU re-inference, handoff overhead applied. Scenarios 2 and 3 run the K-governed architecture. The comparison is honest: same agents, same task, different architecture.</div>
     <div class="header-meta">
@@ -870,7 +870,7 @@ async function runAll() {
     </div>
 
     <div class="bottom-note">
-      MO§E§™ Three-Scenario Execution Proof — Ello Cello LLC © 2026<br>
+      MO§ES™ Three-Scenario Execution Proof — Ello Cello LLC © 2026<br>
       DOI: 10.5281/zenodo.19105225 — Patent No. 63/877,177 (Provisional)<br>
       S1 handoff overhead (${HANDOFF_MS}ms/transition) configurable simulation parameter. All three scenarios run against identical utterance in same session.
     </div>
@@ -887,7 +887,7 @@ function exportReport() {
   const traceRows = traceLog.map(l=>`<tr><td style="font-family:monospace;font-size:10px;color:#888;white-space:nowrap">t=${l.ms}ms</td><td style="font-size:9px;color:#aaa;font-family:monospace;width:30px">${l.sc.toUpperCase()}</td><td style="font-size:11px">${l.text}</td></tr>`).join('');
 
   const html = `<!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><title>MO§E§™ Three-Scenario Report — ${now}</title>
+<html lang="en"><head><meta charset="UTF-8"><title>MO§ES™ Three-Scenario Report — ${now}</title>
 <style>
 body{font-family:Georgia,serif;max-width:900px;margin:40px auto;padding:0 32px;color:#1a1815;background:#fdfcfa;line-height:1.7}
 h1{font-size:22px;font-weight:normal;border-bottom:3px solid #1a1815;padding-bottom:12px;margin-bottom:6px}
@@ -915,7 +915,7 @@ pre{background:#f0ece6;border:1px solid #ddd8d0;padding:12px;font-family:monospa
 .footer{margin-top:32px;padding-top:16px;border-top:1px solid #ddd8d0;font-size:10px;color:#8c8680;line-height:1.7}
 @media print{body{margin:0}}
 </style></head><body>
-<h1>MO§E§™ Three-Scenario Execution Report</h1>
+<h1>MO§ES™ Three-Scenario Execution Report</h1>
 <div class="meta">Generated: ${now} · DOI: 10.5281/zenodo.19105225 · Patent No. 63/877,177 · Ello Cello LLC © 2026</div>
 <h2>Input</h2>
 <p style="background:#f5f2ee;border:1px solid #ddd8d0;padding:12px;font-size:14px">"${d.utterance}"</p>
@@ -948,7 +948,7 @@ pre{background:#f0ece6;border:1px solid #ddd8d0;padding:12px;font-family:monospa
 </div>
 <h2>Execution Trace</h2>
 <table><thead><tr><th>t=</th><th>Scenario</th><th>Event</th></tr></thead><tbody>${traceRows}</tbody></table>
-<div class="footer">All three scenarios run in same session against identical utterance. S1 handoff overhead (${HANDOFF_MS}ms/transition) configurable simulation parameter. Production instrumentation required to validate at scale.<br>MO§E§™ — Ello Cello LLC © 2026 · DOI: 10.5281/zenodo.19105225 · Patent No. 63/877,177 (Provisional)</div>
+<div class="footer">All three scenarios run in same session against identical utterance. S1 handoff overhead (${HANDOFF_MS}ms/transition) configurable simulation parameter. Production instrumentation required to validate at scale.<br>MO§ES™ — Ello Cello LLC © 2026 · DOI: 10.5281/zenodo.19105225 · Patent No. 63/877,177 (Provisional)</div>
 </body></html>`;
 
   const blob = new Blob([html],{type:'text/html'});
