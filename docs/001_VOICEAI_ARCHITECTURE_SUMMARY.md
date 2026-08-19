@@ -1,3 +1,11 @@
+---
+type: Reference
+title: DOC 001 | VOICE AI ARCHITECTURE SUMMARY
+description: DOC 001 | VOICE AI ARCHITECTURE SUMMARY — documentation in docs/.
+tags: [documentation, docs]
+timestamp: 2026-08-19
+---
+
 # DOC 001 | VOICE AI ARCHITECTURE SUMMARY
 ---
 **Timestamp:** 2026-04-22  

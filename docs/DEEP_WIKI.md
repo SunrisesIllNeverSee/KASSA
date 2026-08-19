@@ -1,3 +1,11 @@
+---
+type: Reference
+title: K-Governed Voice Architecture — Deep Wiki
+description: K-Governed Voice Architecture — Deep Wiki — documentation in docs/.
+tags: [documentation, docs]
+timestamp: 2026-08-19
+---
+
 # K-Governed Voice Architecture — Deep Wiki
 
 **Project:** voice-ai · **Status:** BUILD · **Last Updated:** 2026-04-25

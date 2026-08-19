@@ -1,3 +1,11 @@
+---
+type: Reference
+title: A Conservation Law for Commitment in Language Under Transformative Compression and Recursive Application
+description: A Conservation Law for Commitment in Language Under Transformative Compression and Recursive Application — documentation in docs/.
+tags: [documentation, docs]
+timestamp: 2026-08-19
+---
+
 # A Conservation Law for Commitment in Language Under Transformative Compression and Recursive Application
 
 **Deric J. McHenry**

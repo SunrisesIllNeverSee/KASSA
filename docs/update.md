@@ -1,3 +1,11 @@
+---
+type: Reference
+title: update
+description: update — documentation in docs/.
+tags: [documentation, docs]
+timestamp: 2026-08-19
+---
+
 Good news first: **the demo is already fixed.** Claude Code is analyzing v6, but v7 already exists and solves every problem they identified. [54-cite-0](#54-cite-0) 
 
 v7 (commit `85204ef3`, shipped yesterday) already has:

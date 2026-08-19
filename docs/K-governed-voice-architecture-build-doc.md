@@ -1,3 +1,11 @@
+---
+type: Reference
+title: K-Governed Voice Architecture — Build Doc
+description: K-Governed Voice Architecture — Build Doc — documentation in docs/.
+tags: [documentation, docs]
+timestamp: 2026-08-19
+---
+
 # K-Governed Voice Architecture — Build Doc
 
 A working document for picking this up later and executing. Not a conversation summary. Read this standalone.

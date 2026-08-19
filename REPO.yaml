@@ -1,0 +1,39 @@
+standard:
+  name: ello-repo-standard
+  version: "1.0.0"
+  mode: migrate
+
+repo:
+  name: KASSA
+  type: platform
+  lifecycle: active
+  repo_id: kassa
+  family: kassa
+  purpose: KASSA — K-Governed Voice Architecture. Voice governance system with harness, schema, demo.
+
+structure:
+  profile: platform
+  allowed_root_dirs_extra: [.planning, demo, harness, images, schema, docs, system-devin]
+  allowed_root_files_extra: [.codex-notes.md, ChatGPT-Dataset_Testing_Guide.md]
+  document_roots: [docs]
+  artifact_roots: [artifacts, demo, images]
+  archive_roots: [archive, docs/archive]
+
+naming:
+  forbid_version_suffixes: true
+  forbidden_suffixes: [_final, _final2, _new, _updated, _revised, _copy]
+
+knowledge:
+  okf_enabled: true
+  okf_roots: [docs, .coord]
+  okf_severity: warn
+
+coordination:
+  micro_enabled: true
+  micro_root: .coord/micro
+  macro_enabled: true
+  macro_root: .coord/macro
+
+github:
+  ruleset_profile: solo-fast
+  required_check: repo-standard

@@ -1,3 +1,11 @@
+---
+type: Reference
+title: DOC 002 | REVIEWER RESPONSE — SIX OPEN QUESTIONS
+description: DOC 002 | REVIEWER RESPONSE — SIX OPEN QUESTIONS — documentation in docs/.
+tags: [documentation, docs]
+timestamp: 2026-08-19
+---
+
 # DOC 002 | REVIEWER RESPONSE — SIX OPEN QUESTIONS
 ---
 **Timestamp:** 2026-04-24
